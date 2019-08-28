@@ -1,0 +1,289 @@
+@import-normalize;
+@import url("https://fonts.googleapis.com/css?family=Muli:300,600&display=swap");
+
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: "Muli", sans-serif !important;
+	font-size: calc((1vw + 1vh + .5vmin) / 2);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.App {
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	min-width: 0;
+	height: 100%;
+	width: 65%;
+	margin: auto;
+	display: grid;
+	grid-template:
+		"a a" minmax(min-content, max-content)
+		"b c" auto
+		"b d" auto
+		"b f" auto
+		"e f" auto
+		"g g" minmax(min-content, max-content)
+		/ 1fr 1fr;
+	grid-gap: 1rem;
+	box-sizing: border-box;
+	padding: 1rem;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	align-items: center;
+	justify-items: center;
+}
+
+#SpinnerC {
+	padding: 5rem 0;
+	justify-content: center;
+	width: 100%;
+	display: flex;
+}
+
+.container {
+	padding: 1rem;
+	box-sizing: border-box;
+	min-width: 27.5rem;
+}
+
+#HeaderC {
+	grid-area: a;
+	white-space: nowrap;
+  overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: center;
+}
+
+#SetlistC {
+	grid-area: b;
+	align-self: start;
+}
+
+#AlbumsC {
+	grid-area: c;
+	align-self: start;
+}
+
+#StaplesC {
+	grid-area: d;
+	align-self: start;
+}
+
+#AudioFeaturesChartC {
+	grid-area: e;
+	align-self: start;
+}
+
+#AlbumDistChartC {
+	grid-area: f;
+	align-self: start;
+}
+
+#FooterC {
+	grid-area: g;
+	text-align: center;
+}
+
+@media only screen and (orientation: portrait) {
+	html, body {
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		font-family: "Muli", sans-serif !important;
+		font-size: calc((1vw + 1vh + .5vmin) / 1.1);
+	}
+	.App {
+		grid-gap: 0.5rem;
+		padding: 0.5rem;
+		width: 100%;
+		grid-template:
+		"a"
+		"b"
+		"e"
+		"f"
+		"c"
+		"d"
+		"g"
+	}
+
+	#SetlistC {
+		align-self: center;
+	}
+
+	#AlbumsC {
+		align-self: center;
+	}
+
+	#StaplesC {
+		align-self: center;
+	}
+
+	#AlbumDistChartC {
+		align-self: center;
+	}
+
+	#AudioFeaturesChartC {
+		align-self: center;
+	}
+}
+
+a {
+	color: black !important;
+}
+
+.MuiListItem-prod {
+	padding: 0.5rem 0 !important;
+}
+
+#StaplesC .MuiListItem-prod, #AlbumDistChartC .MuiListItem-prod, #HeaderC .MuiListItem-prod, #AlbumsC .MuiListItem-prod {
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+	min-height: inherit !important;
+	line-height: inherit !important;
+}
+
+#AlbumsC .MuiListItemIcon-prod {
+	min-width: 0 !important;
+	padding: 0 !important;
+}
+
+
+#HeaderC .MuiTextField-prod {
+	margin: 0 !important;
+}
+
+#HeaderC .MuiListItem-prod .MuiTypography-prod {
+	white-space: nowrap;
+  overflow: hidden;
+	text-overflow: ellipsis;
+	display: block !important;
+}
+
+#StaplesC .MuiListItemText-prod {
+	margin-right: 3.5rem !important;
+}
+
+#SetlistC .MuiListItem-prod .MuiTypography-prod {
+	font-size: 1.1rem;
+	line-height: 1.5;
+	font-weight: 600;
+	white-space: nowrap;
+  overflow: hidden;
+	text-overflow: ellipsis;
+	margin-right: 3.25em !important;
+	display: block !important;
+}
+
+#HeaderC .MuiList-prod {
+	width: 100% !important;
+}
+
+#SetlistC .MuiListItem-prod .expanded {
+	white-space: initial;
+  overflow: initial;
+	text-overflow: initial;
+	margin-right: 8rem !important;
+}
+
+#SetlistC .MuiListItemSecondaryAction-prod {
+	top: initial !important;
+	bottom: 100%;
+	transform: translateY(150%) !important;
+}
+
+#SetlistC .MuiSvgIcon-prod {
+	cursor: grab !important;
+}
+
+.MuiTypography-prod {
+	flex-grow: 1;
+}
+
+#StaplesC .MuiToolbar-prod .MuiTypography-prod, #AlbumsC .MuiToolbar-prod .MuiTypography-prod {
+	margin-right: 0.5rem !important;
+}
+
+.MuiAppBar-prod {
+	width: 27.5rem !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+
+.MuiList-prod {
+	width: 27.5rem !important;
+	padding: 1vh 0 !important;
+}
+
+.MuiListItemAvatar-prod {
+	padding: 0 0.25rem !important;
+	min-width: inherit !important;
+}
+
+.MuiAvatar-prod {
+	width: 1.5rem !important;
+	height: 1.5rem !important;
+	border-radius: 0 !important;
+}
+
+.MuiFormControl-prod {
+	margin: 0 !important;
+	padding: 0 0 0 0.5rem !important;
+}
+
+.MuiListItemIcon-prod {
+	min-width: 0 !important;
+	padding: 0 0.5rem !important
+}
+
+.chartContainer {
+	width: 22.5rem;
+	height: 22.5rem;
+	margin: auto;
+	padding: 1rem 0;
+}
+
+.chartContainer text {
+	font-size: 1rem !important;
+}
+
+.MuiTable-prod {
+	width: 27.5rem !important;
+}
+
+.MuiTableHead-prod .MuiTableCell-prod {
+	font-size: 0.875rem;
+}
+
+.MuiTableBody-prod .MuiTableCell-prod {
+	font-size: 1rem;
+}
+
+body > li {
+	list-style-type: none !important;
+}
+
+body > li span {
+	font-size: 1.1rem !important;
+	font-weight: 600 !important;
+	white-space: nowrap !important;
+  overflow: hidden !important;
+	text-overflow: ellipsis !important;
+	display: block !important;
+}
+
+body > li button {
+display: none !important;
+}

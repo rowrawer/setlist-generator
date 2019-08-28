@@ -1,0 +1,62 @@
+{
+	"name": "setgen",
+	"version": "2.0.0",
+	"private": true,
+	"dependencies": {
+		"@material-ui/core": "^4.3.3",
+		"@material-ui/icons": "^4.2.1",
+		"@material-ui/styles": "^4.3.3",
+		"@nivo/pie": "^0.59.1",
+		"array-move": "^2.1.0",
+		"chance": "^1.0.18",
+		"clipboard-copy": "^3.1.0",
+		"dotenv": "^8.1.0",
+		"express": "^4.17.1",
+		"http-proxy-middleware": "^0.19.1",
+		"install": "^0.13.0",
+		"lowdb": "^1.0.0",
+		"moment": "^2.24.0",
+		"moment-duration-format": "^2.3.2",
+		"npm": "^6.11.2",
+		"react": "^16.9.0",
+		"react-checkbox-tree": "^1.5.1",
+		"react-dom": "^16.9.0",
+		"react-scripts": "^3.1.1",
+		"react-sortable-hoc": "^1.10.1",
+		"react-spinners-kit": "^1.9.0",
+		"spotify-web-api-node": "^4.0.0",
+		"styled-components": "^4.3.2"
+	},
+	"scripts": {
+		"start": "concurrently \"npm run server\" \"npm run client\"",
+		"client": "set PORT=5415 && react-scripts start",
+		"server": "nodemon server/server.js",
+		"build": "react-scripts build",
+		"prod": "concurrently \"serve -l 5415 -s build\" \"set NODE_ENV=production && node server.js\"",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject"
+	},
+	"eslintConfig": {
+		"extends": "react-app"
+	},
+	"browserslist": [
+		">0.2%",
+		"not dead",
+		"not ie <= 11",
+		"not op_mini all"
+	],
+	"devDependencies": {
+		"concurrently": "^4.1.2",
+		"eslint-config-prettier": "^6.1.0",
+		"eslint-plugin-prettier": "^3.1.0",
+		"prettier": "^1.18.2",
+		"typescript": "^3.6.2"
+	},
+	"nodemonConfig": {
+		"ignore": [
+			"src/*",
+			"package.json",
+			"server/db.json"
+		]
+	}
+}
