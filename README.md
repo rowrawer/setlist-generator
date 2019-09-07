@@ -60,9 +60,4 @@ There will soon be a demo link here.
 - [ ] Integrate with Setlist.fm stats?
 
 ### Additional notes
-This tool was initially inspired by Rivers Cuomo, the frontman of the band Weezer, who spoke in interviews about developing a "setlist algorithm" or "setlist generator" several times[^1][^2][^3][^4] seemingly without actually implementing it in any meaningful way - this led to the creation of the first iteration of this project, the *Terrible Weezer Setlist Generator*, written entirely in pure Javascript, and without any backend to speak of. This repo contains the second, rewritten version of the tool.
-
-[^1]: [Rivers Cuomo on His Data-Driven Approach to Weezer](https://www.billboard.com/articles/columns/rock/8500614/weezer-rivers-cuomo-data-driven-approach-interview)
-[^2]: [Inside Weezer’s Set List Science](https://www.rollingstone.com/music/music-features/weezer-setlist-rivers-cuomo-interview-760114/)
-[^3]: [How Rivers Cuomo will use a computer program to take Weezer’s tour to the next level](https://ew.com/article/2016/05/16/weezer-summer-tour-rivers-cuomo/)
-[^4]: [Rivers Cuomo on Twitter: "Developing a sick setlist algorithm."](https://twitter.com/riverscuomo/status/931563545359208450)
+This tool was initially inspired by Rivers Cuomo, the frontman of the band Weezer, who spoke in interviews about developing a "setlist algorithm" or "setlist generator" several times (see: [1](https://www.billboard.com/articles/columns/rock/8500614/weezer-rivers-cuomo-data-driven-approach-interview), [2](https://www.rollingstone.com/music/music-features/weezer-setlist-rivers-cuomo-interview-760114/), [3](https://ew.com/article/2016/05/16/weezer-summer-tour-rivers-cuomo/), [4](https://twitter.com/riverscuomo/status/931563545359208450)), seemingly without actually implementing it in any meaningful way - this led to the creation of the first iteration of this project, the *Terrible Weezer Setlist Generator*, written entirely in pure Javascript, and without any backend to speak of. This repo contains the second, rewritten version of the tool.
