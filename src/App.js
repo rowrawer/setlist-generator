@@ -177,6 +177,7 @@ export default class App extends Component {
 					const chartData = makeChartData(
 						setlist,
 						this.state.albums,
+						this.state.tracks,
 						this.state.features
 					);
 
@@ -189,25 +190,7 @@ export default class App extends Component {
 						},
 						() => {
 							//save state in local storage
-							const lsData = {
-								albums: [...this.state.albums],
-								tracks: [...this.state.tracks],
-								features: [...this.state.features],
-								topTracks: [...this.state.topTracks],
-								staples: [...this.state.staples],
-								defaultStaples: [...this.state.defaultStaples],
-								songNo: this.state.songNo,
-								checked: [...this.state.checked],
-								setlistLocked: [...this.state.setlistLocked],
-								defaultChecked: [...this.state.defaultChecked],
-								setlist: [...this.state.setlist],
-								setlistNodes: [...this.state.setlistNodes],
-								chartData: { ...this.state.chartData }
-							};
-							localStorage.setItem(
-								this.state.artist.id,
-								JSON.stringify(lsData)
-							);
+							this.saveState();
 							localStorage.setItem("updateDate", updateDate);
 						}
 					);
@@ -215,6 +198,25 @@ export default class App extends Component {
 			);
 		}
 	}
+
+	saveState = () => {
+		const lsData = {
+			albums: [...this.state.albums],
+			tracks: [...this.state.tracks],
+			features: [...this.state.features],
+			topTracks: [...this.state.topTracks],
+			staples: [...this.state.staples],
+			defaultStaples: [...this.state.defaultStaples],
+			songNo: this.state.songNo,
+			checked: [...this.state.checked],
+			setlistLocked: [...this.state.setlistLocked],
+			defaultChecked: [...this.state.defaultChecked],
+			setlist: [...this.state.setlist],
+			setlistNodes: [...this.state.setlistNodes],
+			chartData: { ...this.state.chartData }
+		};
+		localStorage.setItem(this.state.artist.id, JSON.stringify(lsData));
+	};
 
 	handleSetlist = () => {
 		const setlistNodes = pickSetlist(
@@ -232,17 +234,18 @@ export default class App extends Component {
 		const chartData = makeChartData(
 			setlist,
 			this.state.albums,
+			this.state.tracks,
 			this.state.features
 		);
 
-		localStorage.setItem("setlist", JSON.stringify(setlist.setlist));
-		localStorage.setItem("setlistNodes", JSON.stringify(setlist.setlistNodes));
-		localStorage.setItem("chartData", JSON.stringify(chartData));
-		this.setState({
-			setlist,
-			setlistNodes,
-			chartData
-		});
+		this.setState(
+			{
+				setlist,
+				setlistNodes,
+				chartData
+			},
+			() => this.saveState()
+		);
 	};
 
 	handleSongNo = songNo => {
@@ -265,9 +268,7 @@ export default class App extends Component {
 			(track, index) => (setlistNodes[index].pos = index + 1)
 		);
 
-		localStorage.setItem("setlist", JSON.stringify(setlist));
-		localStorage.setItem("setlistNodes", JSON.stringify(setlistNodes));
-		this.setState({ setlist, setlistNodes });
+		this.setState({ setlist, setlistNodes }, () => this.saveState());
 	};
 
 	handlePickSong = id => {
@@ -280,7 +281,8 @@ export default class App extends Component {
 		);
 
 		//find previous song's position and replace it
-		const index = [...this.state.setlist].indexOf(id);
+		const index = this.state.setlist.indexOf(id);
+		newSong.node.pos = index + 1;
 		const setlistNodes = [...this.state.setlistNodes];
 		setlistNodes[index] = newSong.node;
 
@@ -289,13 +291,11 @@ export default class App extends Component {
 		const chartData = makeChartData(
 			setlist,
 			this.state.albums,
+			this.state.tracks,
 			this.state.features
 		);
 
-		localStorage.setItem("setlist", JSON.stringify(setlist));
-		localStorage.setItem("setlistNodes", JSON.stringify(setlistNodes));
-		localStorage.setItem("chartData", JSON.stringify(chartData));
-		this.setState({ setlist, setlistNodes, chartData });
+		this.setState({ setlist, setlistNodes, chartData }, () => this.saveState());
 	};
 
 	handleDeleteSong = id => {
@@ -311,18 +311,19 @@ export default class App extends Component {
 		const chartData = makeChartData(
 			setlist,
 			this.state.albums,
+			this.state.tracks,
 			this.state.features
 		);
 
-		localStorage.setItem("setlist", JSON.stringify(setlist));
-		localStorage.setItem("setlistNodes", JSON.stringify(setlistNodes));
-		localStorage.setItem("chartData", JSON.stringify(chartData));
-		this.setState({
-			setlist,
-			setlistNodes,
-			chartData,
-			songNo: this.state.songNo - 1
-		});
+		this.setState(
+			{
+				setlist,
+				setlistNodes,
+				chartData,
+				songNo: this.state.songNo - 1
+			},
+			() => this.saveState()
+		);
 	};
 
 	handleAddSong = start => {
@@ -340,7 +341,11 @@ export default class App extends Component {
 		if (start) {
 			setlist = [newSong.id, ...this.state.setlist];
 			setlistNodes = [newSong.node, ...this.state.setlistNodes];
+			setlistNodes.forEach(
+				(track, index) => (setlistNodes[index].pos = index + 1)
+			);
 		} else {
+			newSong.node.pos = this.state.setlist.length + 1;
 			setlist = [...this.state.setlist, newSong.id];
 			setlistNodes = [...this.state.setlistNodes, newSong.node];
 		}
@@ -348,18 +353,19 @@ export default class App extends Component {
 		const chartData = makeChartData(
 			setlist,
 			this.state.albums,
+			this.state.tracks,
 			this.state.features
 		);
 
-		localStorage.setItem("setlist", JSON.stringify(setlist));
-		localStorage.setItem("setlistNodes", JSON.stringify(setlistNodes));
-		localStorage.setItem("chartData", JSON.stringify(chartData));
-		this.setState({
-			setlist,
-			setlistNodes,
-			chartData,
-			songNo: this.state.songNo + 1
-		});
+		this.setState(
+			{
+				setlist,
+				setlistNodes,
+				chartData,
+				songNo: this.state.songNo + 1
+			},
+			() => this.saveState()
+		);
 	};
 
 	handleLockSong = id => {
@@ -371,13 +377,11 @@ export default class App extends Component {
 		} else {
 			setlistLocked = [...this.state.setlistLocked, id];
 		}
-		localStorage.setItem("setlistLocked", JSON.stringify(setlistLocked));
-		this.setState({ setlistLocked });
+		this.setState({ setlistLocked }, () => this.saveState());
 	};
 
 	handleUnlockAll = () => {
-		localStorage.removeItem("setlistLocked");
-		this.setState({ setlistLocked: [] });
+		this.setState({ setlistLocked: [] }, () => this.saveState());
 	};
 
 	handleReset = () => {
@@ -386,14 +390,12 @@ export default class App extends Component {
 	};
 
 	deleteAllStaples = () => {
-		localStorage.removeItem("staples");
-		this.setState({ staples: [] });
+		this.setState({ staples: [] }, () => this.saveState());
 	};
 
 	deleteStaple = stapleId => {
 		const newState = this.state.staples.filter(e => e !== stapleId);
-		localStorage.setItem("staples", JSON.stringify(newState));
-		this.setState({ staples: newState });
+		this.setState({ staples: newState }, () => this.saveState());
 	};
 
 	restoreStaples = () => {
@@ -405,16 +407,14 @@ export default class App extends Component {
 			if (!this.state.checked.includes(staple)) newChecked.push(staple);
 		});
 
-		localStorage.setItem("staples", JSON.stringify(newStaples));
-		localStorage.setItem("checked", JSON.stringify(newChecked));
-
-		this.setState({ staples: newStaples, checked: newChecked });
+		this.setState({ staples: newStaples, checked: newChecked }, () =>
+			this.saveState()
+		);
 	};
 
 	restoreChecked = () => {
 		const newState = [...this.state.topTracks];
-		localStorage.setItem("checked", JSON.stringify(newState));
-		this.setState({ checked: newState });
+		this.setState({ checked: newState }, () => this.saveState());
 	};
 
 	onCheck = checked => {
@@ -422,9 +422,7 @@ export default class App extends Component {
 		const newStaples = this.state.staples.filter(staple =>
 			checked.includes(staple)
 		);
-		localStorage.setItem("checked", JSON.stringify(checked));
-		localStorage.setItem("staples", JSON.stringify(newStaples));
-		this.setState({ checked, staples: newStaples });
+		this.setState({ checked, staples: newStaples }, () => this.saveState());
 	};
 
 	addStaple = stapleId => {
@@ -432,10 +430,12 @@ export default class App extends Component {
 		//add to pool when added as staple
 		if (!this.state.checked.includes(stapleId)) {
 			const newChecked = [...this.state.checked, stapleId];
-			this.setState({ checked: newChecked });
+			this.setState({ checked: newChecked, staples: newStaples }, () =>
+				this.saveState()
+			);
+		} else {
+			this.setState({ staples: newStaples }, () => this.saveState());
 		}
-		localStorage.setItem("staples", JSON.stringify(newStaples));
-		this.setState({ staples: newStaples });
 	};
 
 	render() {

@@ -44,7 +44,7 @@ Also, practicing React, Node, responsive web design, and using external APIs.
 5. Copy setlist to clipboard (optional).
 
 ### Where can I use this?
-There will soon be a demo link here.
+**[Check out this demo right here.](http://rowrawer.cf:5415/)**
 
 ### How do I launch this myself?
 1. `git clone https://github.com/rowrawer/setlist-generator.git .`
@@ -54,9 +54,9 @@ There will soon be a demo link here.
 ---
 
 ### Future plans and things to do
-- [ ] Upload demo,
+- [x] Upload demo,
 - [ ] Generate setlists/pick songs based on other factors (danceability, valence, etc.) provided by Spotify? The songs all seem to provide similar values in this department,
-- [ ] Add more stats to the song features table (year of release?)
+- [ ] Add more stats to the song features table
 - [ ] Integrate with Setlist.fm stats?
 
 ### Additional notes

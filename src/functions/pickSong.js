@@ -21,7 +21,7 @@ export function pickSong(tracks, features, checked, setlist) {
 		node: {
 			id: track.id,
 			name: track.name,
-			pos: setlist.indexOf(track.id) + 1 || setlist.length + 1,
+			//pos calculated in App
 			duration_ms: track.duration_ms,
 			album: track.album,
 			key: feature.key,

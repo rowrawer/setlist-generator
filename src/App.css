@@ -30,7 +30,7 @@ html, body {
 		"a a" minmax(min-content, max-content)
 		"b c" auto
 		"b d" auto
-		"b f" auto
+		"b ." auto
 		"e f" auto
 		"g g" minmax(min-content, max-content)
 		/ 1fr 1fr;

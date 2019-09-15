@@ -1,5 +1,3 @@
-const data = { albums: [], tracks: [], features: [] };
-
 export async function getArtistsList(query) {
 	return await fetch(`api/getArtistsList/${query}`)
 		.then(res => {
@@ -84,7 +82,12 @@ export async function getAlbumList(artist) {
 		});
 }
 
+//rewrite the whole data thing
+let data = { albums: [], tracks: [], features: [] };
+
 export async function getAlbum(album) {
+	data = { albums: [], tracks: [], features: [] };
+
 	const tracks = await fetch(`api/getAlbum/${album}`)
 		.then(res => {
 			if (!res.ok) {
@@ -137,6 +140,7 @@ async function getTracks(album, tracks) {
 }
 
 async function getAudioFeatures(album, tracks) {
+	//for stuff like bpm, key, etc.
 	await fetch(`api/getAudioFeatures/${album}/${tracks}`)
 		.then(res => {
 			if (!res.ok) {

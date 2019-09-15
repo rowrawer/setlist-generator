@@ -43,7 +43,7 @@ colors.forEach(hue => {
 
 colorsProcessed = chance.shuffle(colorsProcessed);
 
-export const makeChartData = (setlist, albums, features) => {
+export const makeChartData = (setlist, albums, tracks, features) => {
 	let albumDistChartData = albumSort(albums).map((album, index) => {
 		const newTracks = album.tracks.items.filter(track =>
 			setlist.includes(track.id)
@@ -60,37 +60,58 @@ export const makeChartData = (setlist, albums, features) => {
 
 	albumDistChartData = albumDistChartData.filter(album => album.value > 0);
 
-	let audioFeaturesChartData = {
+	const audioFeaturesChartData = {
 		duration_ms: { name: "Duration", min: 0, avg: 0, max: 0 },
-		tempo: { name: "Tempo (BPM)", min: 0, avg: 0, max: 0 }
+		tempo: { name: "Tempo (BPM)", min: 0, avg: 0, max: 0 },
+		release_date: { name: "Release year", min: 0, avg: 0, max: 0 }
 	};
 
-	const setlistTracks = features.filter(track => setlist.includes(track.id));
+	const setlistTracks = tracks.filter(track => setlist.includes(track.id));
+	const setlistFeatures = features.filter(track => setlist.includes(track.id));
 
-	setlistTracks.map(track => track.duration_ms).sort((a, b) => b - a);
+	setlistFeatures.map(track => track.duration_ms).sort((a, b) => b - a);
 
-	for (let feature in audioFeaturesChartData) {
-		const sortedTracks = setlistTracks
-			.map(track => track[feature])
-			.sort((a, b) => b - a);
-		audioFeaturesChartData[feature].min = Math.round(
-			sortedTracks[sortedTracks.length - 1]
-		);
-		audioFeaturesChartData[feature].max = Math.round(sortedTracks[0]);
-		audioFeaturesChartData[feature].avg = Math.round(
-			sortedTracks.reduce((a, b) => {
-				if (Number(a) && Number(b)) return a + b;
-				return 0;
-			}) / sortedTracks.length
-		);
-	}
+	const sortedDuration = setlistFeatures
+		.map(track => track.duration_ms)
+		.sort((a, b) => b - a);
 
-	for (let value in audioFeaturesChartData.duration_ms) {
-		if (Number(audioFeaturesChartData.duration_ms[value]))
-			audioFeaturesChartData.duration_ms[value] = moment(
-				audioFeaturesChartData.duration_ms[value]
-			).format("m:ss");
-	}
+	audioFeaturesChartData.duration_ms.min = moment(
+		Math.round(sortedDuration[sortedDuration.length - 1])
+	).format("m:ss");
+
+	audioFeaturesChartData.duration_ms.max = moment(
+		Math.round(sortedDuration[0])
+	).format("m:ss");
+
+	audioFeaturesChartData.duration_ms.avg = moment(
+		Math.round(sortedDuration.reduce((a, b) => a + b) / sortedDuration.length)
+	).format("m:ss");
+
+	const sortedTempo = setlistFeatures
+		.map(track => track.tempo)
+		.sort((a, b) => b - a);
+
+	audioFeaturesChartData.tempo.min = Math.round(
+		sortedTempo[sortedTempo.length - 1]
+	);
+
+	audioFeaturesChartData.tempo.max = Math.round(sortedTempo[0]);
+
+	audioFeaturesChartData.tempo.avg = Math.round(
+		sortedTempo.reduce((a, b) => a + b) / sortedTempo.length
+	);
+
+	const sortedYear = setlistTracks
+		.map(track => Number(track.album.release_date.slice(0, 4)))
+		.sort((a, b) => b - a);
+
+	audioFeaturesChartData.release_date.min = sortedYear[sortedYear.length - 1];
+
+	audioFeaturesChartData.release_date.max = sortedYear[0];
+
+	audioFeaturesChartData.release_date.avg = Math.round(
+		sortedYear.reduce((a, b) => a + b) / sortedYear.length
+	);
 
 	return { albumDistChartData, audioFeaturesChartData };
 };
