@@ -54,7 +54,7 @@ Also, practicing React, Node, responsive web design, and using external APIs.
 ---
 
 ### Future plans and things to do
-- [x] Upload demo,
+- [x] ~~Upload demo,~~
 - [ ] Generate setlists/pick songs based on other factors (danceability, valence, etc.) provided by Spotify? The songs all seem to provide similar values in this department,
 - [ ] Add more stats to the song features table
 - [ ] Integrate with Setlist.fm stats?
