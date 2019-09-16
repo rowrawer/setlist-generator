@@ -44,7 +44,7 @@ Also, practicing React, Node, responsive web design, and using external APIs.
 5. Copy setlist to clipboard (optional).
 
 ### Where can I use this?
-**[Check out this demo right here.](http://rowrawer.cf:5415/)**
+**[Check out this demo right here.](https://rowrawer.cf:5415/)**
 
 ### How do I launch this myself?
 1. `git clone https://github.com/rowrawer/setlist-generator.git .`
