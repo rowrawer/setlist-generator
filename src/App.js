@@ -39,6 +39,7 @@ const initialState = {
 	setLoading: true,
 	chartData: {},
 	setlistLocked: [],
+	albumsFiltered: [],
 	artist: {},
 	error: false
 };
@@ -86,13 +87,14 @@ export default class App extends Component {
 
 	//save in local storage as artist: {albums, tracks, etc.}
 	async handleData() {
-		if (localStorage.getItem(this.state.artist.id)) {
-			//if the update date in local storage is correct then load previous state
-			const lsUpdateDate = localStorage.getItem("updateDate");
-			if (Number(lsUpdateDate) === updateDate) {
-				const lsData = JSON.parse(localStorage.getItem(this.state.artist.id));
-				this.setState({ ...this.state, ...lsData, setLoading: false });
-			}
+		//if the update date and artist are local storage is correct then load previous state
+		const lsUpdateDate = localStorage.getItem("updateDate");
+		if (
+			localStorage.getItem(this.state.artist.id) &&
+			Number(lsUpdateDate) === updateDate
+		) {
+			const lsData = JSON.parse(localStorage.getItem(this.state.artist.id));
+			this.setState({ ...this.state, ...lsData, setLoading: false });
 		} else {
 			//otherwise load albums first
 			let albumList = await getAlbumList(this.state.artist.id);
@@ -118,18 +120,49 @@ export default class App extends Component {
 			//sort by release date
 			data.albums = albumSort(data.albums);
 
-			//if there's less than 50 tracks, use a third of the tracks
-			//(default song pool)
-			const topTracks =
-				Math.round(data.tracks.length / 3) <= 49
-					? data.tracks
-							.sort((a, b) => b.popularity - a.popularity)
-							.slice(0, Math.round(data.tracks.length / 3))
-							.map(track => track.id)
-					: data.tracks
-							.sort((a, b) => b.popularity - a.popularity)
-							.slice(0, 50)
-							.map(track => track.id);
+			let topTracks = data.tracks.filter(
+				track =>
+					data.albums.find(album => album.id === track.album.id).album_type ===
+					"album"
+			);
+
+			let albumsFiltered = [
+				{ label: "Albums", value: "album", checked: true },
+				{ label: "EPs and singles", value: "single", checked: false },
+				{ label: "Deluxe editions", value: "deluxe", checked: false }
+			];
+
+			if (topTracks.length > 0) {
+				topTracks =
+					//if there's less than 50 tracks, use a third of the tracks
+					Math.round(topTracks.length / 3) <= 49
+						? topTracks
+								.sort((a, b) => b.popularity - a.popularity)
+								.slice(0, Math.round(topTracks.length / 3))
+								.map(track => track.id)
+						: topTracks
+								.sort((a, b) => b.popularity - a.popularity)
+								.slice(0, 50)
+								.map(track => track.id);
+			} else {
+				//if there are no album tracks, use all tracks
+				//the entire filter segment is janky
+				albumsFiltered = [
+					{ label: "Albums", value: "album", checked: true },
+					{ label: "EPs and singles", value: "single", checked: true },
+					{ label: "Deluxe editions", value: "deluxe", checked: true }
+				];
+				topTracks =
+					Math.round(data.tracks.length / 3) <= 49
+						? data.tracks
+								.sort((a, b) => b.popularity - a.popularity)
+								.slice(0, Math.round(data.tracks.length / 3))
+								.map(track => track.id)
+						: data.tracks
+								.sort((a, b) => b.popularity - a.popularity)
+								.slice(0, 50)
+								.map(track => track.id);
+			}
 
 			const defaultStaples =
 				topTracks.slice(0, topTracks.length / 4).length <= 9
@@ -159,6 +192,7 @@ export default class App extends Component {
 					songNo,
 					checked,
 					setlistLocked,
+					albumsFiltered,
 					defaultChecked: topTracks
 				},
 				() => {
@@ -213,7 +247,8 @@ export default class App extends Component {
 			defaultChecked: [...this.state.defaultChecked],
 			setlist: [...this.state.setlist],
 			setlistNodes: [...this.state.setlistNodes],
-			chartData: { ...this.state.chartData }
+			chartData: { ...this.state.chartData },
+			albumsFiltered: [...this.state.albumsFiltered]
 		};
 		localStorage.setItem(this.state.artist.id, JSON.stringify(lsData));
 	};
@@ -438,6 +473,16 @@ export default class App extends Component {
 		}
 	};
 
+	onAlbumsFilteredChange = value => {
+		//spread the state, find the appropriate object, change the checked value
+		const newAlbumsFiltered = [...this.state.albumsFiltered].map(filter =>
+			filter.value === value ? { ...filter, checked: !filter.checked } : filter
+		);
+		this.setState({ albumsFiltered: newAlbumsFiltered }, () =>
+			this.saveState()
+		);
+	};
+
 	render() {
 		const {
 			setlist,
@@ -453,6 +498,7 @@ export default class App extends Component {
 			chartData,
 			features,
 			setlistLocked,
+			albumsFiltered,
 			artist,
 			error
 		} = this.state;
@@ -501,6 +547,8 @@ export default class App extends Component {
 									staples={staples}
 									addStaple={this.addStaple}
 									deleteStaple={this.deleteStaple}
+									albumsFiltered={albumsFiltered}
+									onAlbumsFilteredChange={this.onAlbumsFilteredChange}
 								/>
 							</div>
 							<div id="StaplesC" className="container">

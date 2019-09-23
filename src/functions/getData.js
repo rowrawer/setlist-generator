@@ -60,24 +60,12 @@ export async function getAlbumList(artist) {
 		})
 		.then(json => {
 			if (json) {
-				//rewrite this
-				let result = json.items.filter(album => album.album_group === "album");
-				if (result.length === 0)
-					result = json.items.filter(album => album.album_group === "single");
-				if (result.length === 0)
-					result = json.items.filter(
-						album => album.album_group === "compilation"
-					);
-				result = result.filter(album => !album.name.includes("Deluxe"));
-
 				const names = [];
-				result = result.filter(album => {
+				return json.items.filter(album => {
 					const duplicate = names.includes(album.name);
 					names.push(album.name);
 					return !duplicate;
 				});
-
-				return result;
 			}
 		});
 }
@@ -103,6 +91,13 @@ export async function getAlbum(album) {
 		})
 		.then(json => {
 			if (json) {
+				//deluxe type for filter - not ideal but works
+				json =
+					(json.name.includes("Deluxe") &&
+						(json.name.includes("Edition") || json.name.includes("Version"))) ||
+					json.name.includes("(Deluxe)")
+						? { ...json, album_type: "deluxe" }
+						: json;
 				data.albums.push(json);
 				let tracks = json.tracks.items.map(track => track.id); //extract track id array from json
 				return tracks;

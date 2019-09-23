@@ -2,6 +2,11 @@ import React, { PureComponent } from "react";
 import AlbumsCheckboxTree from "./Albums/AlbumsCheckboxTree";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import AlbumsAppBar from "./Albums/AlbumsAppBar";
+import Menu from "@material-ui/core/Menu";
+import FormGroup from "@material-ui/core/FormGroup";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
 
 export default class Albums extends PureComponent {
 	constructor(props) {
@@ -9,7 +14,8 @@ export default class Albums extends PureComponent {
 		this.state = {
 			filterText: "",
 			nodesFiltered: this.props.albums,
-			expanded: []
+			expanded: [],
+			anchorEl: null
 		};
 	}
 
@@ -38,6 +44,11 @@ export default class Albums extends PureComponent {
 
 	onExpand = expanded => this.setState({ expanded });
 
+	//open album filter list menu
+	handleMenuClick = e => this.setState({ anchorEl: e.currentTarget });
+
+	handleMenuClose = () => this.setState({ anchorEl: null });
+
 	render() {
 		const {
 			checked,
@@ -46,12 +57,42 @@ export default class Albums extends PureComponent {
 			checkDefaultAlbums,
 			staples,
 			addStaple,
-			deleteStaple
+			deleteStaple,
+			albumsFiltered,
+			onAlbumsFilteredChange
 		} = this.props;
-		const { filterText, nodesFiltered, expanded } = this.state;
+		const { filterText, nodesFiltered, expanded, anchorEl } = this.state;
 
 		return (
 			<>
+				<Menu
+					anchorEl={anchorEl}
+					open={Boolean(anchorEl)}
+					onClose={this.handleMenuClose}
+				>
+					<FormGroup>
+						{albumsFiltered &&
+							albumsFiltered.map(filter => {
+								return (
+									<MenuItem key={filter.value} dense>
+										<FormControlLabel
+											control={
+												<Checkbox
+													checked={filter.checked}
+													value={filter.value}
+													color="default"
+													disableRipple
+													style={{ backgroundColor: "transparent" }}
+												/>
+											}
+											label={filter.label}
+											onChange={() => onAlbumsFilteredChange(filter.value)}
+										/>
+									</MenuItem>
+								);
+							})}
+					</FormGroup>
+				</Menu>
 				<AlbumsAppBar
 					filterText={filterText}
 					onFilterChange={this.onFilterChange}
@@ -59,6 +100,7 @@ export default class Albums extends PureComponent {
 					checked={checked}
 					restoreChecked={restoreChecked}
 					checkDefaultAlbums={checkDefaultAlbums}
+					handleMenuClick={this.handleMenuClick}
 				/>
 				<AlbumsCheckboxTree
 					nodes={nodesFiltered}
@@ -69,6 +111,7 @@ export default class Albums extends PureComponent {
 					staples={staples}
 					addStaple={addStaple}
 					deleteStaple={deleteStaple}
+					albumsFiltered={albumsFiltered}
 				/>
 			</>
 		);

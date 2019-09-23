@@ -137,6 +137,7 @@ app.get("/api/getAlbumList/:id", (req, res, next) => {
 		spotifyApi
 			.getArtistAlbums(req.params.id, {
 				country: "US",
+				include_groups: "album,single",
 				limit: 50
 			})
 			.then(

@@ -12,6 +12,7 @@ import moment from "moment";
 import IconButton from "@material-ui/core/IconButton";
 import LockOpenIcon from "@material-ui/icons/LockOpenOutlined";
 import LockIcon from "@material-ui/icons/Lock";
+import Divider from "@material-ui/core/Divider";
 
 const AlbumEntry = ({
 	album,
@@ -131,7 +132,8 @@ function AlbumsCheckboxTree(props) {
 		onExpand,
 		staples,
 		addStaple,
-		deleteStaple
+		deleteStaple,
+		albumsFiltered
 	} = props;
 
 	const handleExpand = id => {
@@ -169,27 +171,40 @@ function AlbumsCheckboxTree(props) {
 
 	return (
 		<List className="MuiList-prod">
-			{nodes.map(album => (
-				<React.Fragment key={album.id}>
-					<AlbumEntry
-						album={album}
-						checked={checked}
-						handleCheckAlbum={handleCheckAlbum}
-						handleExpand={handleExpand}
-						expanded={expanded}
-					/>
-					<TrackEntries
-						tracks={album.tracks.items}
-						checked={checked}
-						handleCheck={handleCheck}
-						expanded={expanded}
-						album={album.id}
-						staples={staples}
-						addStaple={addStaple}
-						deleteStaple={deleteStaple}
-					/>
-				</React.Fragment>
-			))}
+			{nodes
+				//sort by type
+				.sort((a, b) => (a.album_type > b.album_type ? 1 : -1))
+				.map(
+					(album, i) =>
+						//only display if not filtered out or already in pool
+						(albumsFiltered.find(filter => filter.value === album.album_type)
+							.checked ||
+							album.tracks.items.filter(track => checked.includes(track.id))
+								.length > 0) && (
+							//add divider if different type than previous element in array
+							<React.Fragment key={album.id}>
+								{nodes[i - 1] &&
+									nodes[i - 1].album_type !== album.album_type && <Divider />}
+								<AlbumEntry
+									album={album}
+									checked={checked}
+									handleCheckAlbum={handleCheckAlbum}
+									handleExpand={handleExpand}
+									expanded={expanded}
+								/>
+								<TrackEntries
+									tracks={album.tracks.items}
+									checked={checked}
+									handleCheck={handleCheck}
+									expanded={expanded}
+									album={album.id}
+									staples={staples}
+									addStaple={addStaple}
+									deleteStaple={deleteStaple}
+								/>
+							</React.Fragment>
+						)
+				)}
 		</List>
 	);
 }

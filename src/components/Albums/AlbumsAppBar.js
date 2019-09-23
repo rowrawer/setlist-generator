@@ -8,6 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import ClearIcon from "@material-ui/icons/Clear";
+import FilterListIcon from "@material-ui/icons/FilterList";
 
 function AlbumsAppBar(props) {
 	const {
@@ -16,7 +17,8 @@ function AlbumsAppBar(props) {
 		onClearClick,
 		checked,
 		restoreChecked,
-		checkDefaultAlbums
+		checkDefaultAlbums,
+		handleMenuClick
 	} = props;
 
 	return (
@@ -33,7 +35,7 @@ function AlbumsAppBar(props) {
 					style={{
 						fontFamily: "'Muli', sans-serif",
 						margin: "1vh",
-						width: "12.75rem"
+						width: "12rem"
 					}}
 					InputProps={{
 						startAdornment: (
@@ -64,6 +66,16 @@ function AlbumsAppBar(props) {
 				>
 					{checked.length}
 				</Typography>
+				<IconButton
+					edge="end"
+					aria-label="Filter"
+					size="small"
+					onClick={e => {
+						handleMenuClick(e);
+					}}
+				>
+					<FilterListIcon />
+				</IconButton>
 				<IconButton
 					edge="end"
 					aria-label="Restore defaults"
