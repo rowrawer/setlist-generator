@@ -1,1 +1,1 @@
-export const updateDate = 1569283200000;
+export const updateDate = 1569422400000;

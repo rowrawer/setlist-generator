@@ -39,7 +39,7 @@ export default class Setlist extends PureComponent {
 		//copies setlist as a plain text list
 		const formattedSetlist = [];
 		setlistNodes.forEach(track => {
-			formattedSetlist.push(`${track.pos + 1}. ${track.name}`);
+			formattedSetlist.push(`${track.pos}. ${track.name}`);
 		});
 		copy(formattedSetlist.join("\n")).then(() => {
 			this.setState({ openSnackbar: true });

@@ -85,11 +85,9 @@ const TrackEntries = ({
 			expanded.includes(album) && (
 				<ListItem
 					key={track.id}
-					className="MuiListItem-prod"
+					className="MuiListItem-prod track"
 					style={
-						staples.includes(track.id)
-							? { backgroundColor: "#f5f5f5", marginLeft: "2.75rem" }
-							: { marginLeft: "2.75rem" }
+						staples.includes(track.id) ? { backgroundColor: "#f5f5f5" } : {}
 					}
 				>
 					<ListItemIcon edge="start" className="MuiListItemIcon-prod">
@@ -171,40 +169,38 @@ function AlbumsCheckboxTree(props) {
 
 	return (
 		<List className="MuiList-prod">
-			{nodes
-				//sort by type
-				.sort((a, b) => (a.album_type > b.album_type ? 1 : -1))
-				.map(
-					(album, i) =>
-						//only display if not filtered out or already in pool
-						(albumsFiltered.find(filter => filter.value === album.album_type)
-							.checked ||
-							album.tracks.items.filter(track => checked.includes(track.id))
-								.length > 0) && (
-							//add divider if different type than previous element in array
-							<React.Fragment key={album.id}>
-								{nodes[i - 1] &&
-									nodes[i - 1].album_type !== album.album_type && <Divider />}
-								<AlbumEntry
-									album={album}
-									checked={checked}
-									handleCheckAlbum={handleCheckAlbum}
-									handleExpand={handleExpand}
-									expanded={expanded}
-								/>
-								<TrackEntries
-									tracks={album.tracks.items}
-									checked={checked}
-									handleCheck={handleCheck}
-									expanded={expanded}
-									album={album.id}
-									staples={staples}
-									addStaple={addStaple}
-									deleteStaple={deleteStaple}
-								/>
-							</React.Fragment>
-						)
-				)}
+			{nodes.map(
+				(album, i) =>
+					//only display if not filtered out or already in pool
+					(albumsFiltered.find(filter => filter.value === album.album_type)
+						.checked ||
+						album.tracks.items.filter(track => checked.includes(track.id))
+							.length > 0) && (
+						//add divider if different type than previous element in array
+						<React.Fragment key={album.id}>
+							{nodes[i - 1] && nodes[i - 1].album_type !== album.album_type && (
+								<Divider />
+							)}
+							<AlbumEntry
+								album={album}
+								checked={checked}
+								handleCheckAlbum={handleCheckAlbum}
+								handleExpand={handleExpand}
+								expanded={expanded}
+							/>
+							<TrackEntries
+								tracks={album.tracks.items}
+								checked={checked}
+								handleCheck={handleCheck}
+								expanded={expanded}
+								album={album.id}
+								staples={staples}
+								addStaple={addStaple}
+								deleteStaple={deleteStaple}
+							/>
+						</React.Fragment>
+					)
+			)}
 		</List>
 	);
 }
