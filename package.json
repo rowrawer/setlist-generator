@@ -7,31 +7,31 @@
 		"url": "https://github.com/rowrawer"
 	},
 	"repository": "github:rowrawer/setlist-generator",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"private": true,
 	"dependencies": {
-		"@material-ui/core": "^4.4.3",
-		"@material-ui/icons": "^4.4.3",
-		"@material-ui/styles": "^4.4.3",
-		"@nivo/pie": "^0.59.1",
-		"array-move": "^2.1.0",
-		"chance": "^1.1.0",
+		"@material-ui/core": "^4.11.0",
+		"@material-ui/icons": "^4.9.1",
+		"@material-ui/styles": "^4.10.0",
+		"@nivo/pie": "^0.62.0",
+		"array-move": "^3.0.0",
+		"chance": "^1.1.6",
 		"clipboard-copy": "^3.1.0",
-		"dotenv": "^8.1.0",
+		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
-		"helmet": "^3.21.1",
+		"helmet": "^3.23.3",
 		"install": "^0.13.0",
-		"moment": "^2.24.0",
+		"moment": "^2.27.0",
 		"moment-duration-format": "^2.3.2",
-		"npm": "^6.11.3",
-		"react": "^16.9.0",
-		"react-checkbox-tree": "^1.5.1",
-		"react-dom": "^16.9.0",
-		"react-scripts": "^3.1.2",
-		"react-sortable-hoc": "^1.10.1",
-		"react-spinners-kit": "^1.9.0",
+		"npm": "^6.14.6",
+		"react": "^16.13.1",
+		"react-checkbox-tree": "^1.6.0",
+		"react-dom": "^16.13.1",
+		"react-scripts": "^3.4.1",
+		"react-sortable-hoc": "^1.11.0",
+		"react-spinners-kit": "^1.9.1",
 		"spotify-web-api-node": "^4.0.0",
-		"styled-components": "^4.4.0"
+		"styled-components": "^5.1.1"
 	},
 	"scripts": {
 		"start": "concurrently \"npm run server\" \"npm run client\"",
@@ -52,12 +52,12 @@
 		"not op_mini all"
 	],
 	"devDependencies": {
-		"concurrently": "^4.1.2",
-		"eslint-config-prettier": "^6.3.0",
-		"eslint-plugin-prettier": "^3.1.1",
-		"http-proxy-middleware": "^0.20.0",
-		"prettier": "^1.18.2",
-		"typescript": "^3.6.3"
+		"concurrently": "^5.2.0",
+		"eslint-config-prettier": "^6.11.0",
+		"eslint-plugin-prettier": "^3.1.4",
+		"http-proxy-middleware": "^1.0.5",
+		"prettier": "^2.0.5",
+		"typescript": "^3.9.7"
 	},
 	"nodemonConfig": {
 		"ignore": [

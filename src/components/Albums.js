@@ -74,21 +74,26 @@ export default class Albums extends PureComponent {
 						{albumsFiltered &&
 							albumsFiltered.map(filter => {
 								return (
-									<MenuItem key={filter.value} dense>
-										<FormControlLabel
-											control={
-												<Checkbox
-													checked={filter.checked}
-													value={filter.value}
-													color="default"
-													disableRipple
-													style={{ backgroundColor: "transparent" }}
-												/>
-											}
-											label={filter.label}
-											onChange={() => onAlbumsFilteredChange(filter.value)}
-										/>
-									</MenuItem>
+									//only show a filter when needed
+									nodesFiltered.filter(
+										album => album.album_type === filter.value
+									).length > 0 && (
+										<MenuItem key={filter.value} dense>
+											<FormControlLabel
+												control={
+													<Checkbox
+														checked={filter.checked}
+														value={filter.value}
+														color="default"
+														disableRipple
+														style={{ backgroundColor: "transparent" }}
+													/>
+												}
+												label={filter.label}
+												onChange={() => onAlbumsFilteredChange(filter.value)}
+											/>
+										</MenuItem>
+									)
 								);
 							})}
 					</FormGroup>
