@@ -3,16 +3,16 @@ import Chance from "chance";
 const chance = new Chance();
 
 export function pickSong(tracks, features, checked, setlist) {
-	const trackList = tracks.filter(track => {
-		return checked.includes(track.id) && !setlist.includes(track.id);
-	});
+	const trackList = tracks.filter(
+		trackEl => checked.includes(track.Elid) && !setlist.includes(trackEl.id)
+	);
 
-	const trackIds = trackList.map(track => track.id);
-	const trackWeight = trackList.map(track => track.popularity);
+	const trackIds = trackList.map(trackEl => trackEl.id);
+	const trackWeight = trackList.map(trackEl => trackEl.popularity);
 
 	const newTrack = chance.weighted(trackIds, trackWeight);
 
-	const track = tracks.find(track => track.id === newTrack);
+	const track = tracks.find(trackEl => trackEl.id === newTrack);
 
 	const feature = features.find(e => e.id === track.id);
 
@@ -21,7 +21,7 @@ export function pickSong(tracks, features, checked, setlist) {
 		node: {
 			id: track.id,
 			name: track.name,
-			//pos calculated in App
+			// pos calculated in App
 			duration_ms: track.duration_ms,
 			album: track.album,
 			key: feature.key,

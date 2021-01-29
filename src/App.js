@@ -61,7 +61,7 @@ export default class App extends Component {
 				}
 			})();
 		} else {
-			//restore last used artist page on load via local storage
+			// restore last used artist page on load via local storage
 			const artist = localStorage.getItem("artist");
 			if (artist) {
 				this.setState({ artist: JSON.parse(artist) }, () => this.handleData());
@@ -70,7 +70,7 @@ export default class App extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		//don't update the main component until it's done loading
+		// don't update the main component until it's done loading
 		if (
 			this.state.setLoading === nextState.setLoading &&
 			nextState.setLoading === 0
@@ -80,28 +80,307 @@ export default class App extends Component {
 	}
 
 	handleSearch = artist => {
-		//this is for the initial artist search bar
+		// this is for the initial artist search bar
 		localStorage.setItem("artist", JSON.stringify(artist));
 		this.setState({ artist }, () => this.handleData());
 	};
 
-	//save in local storage as artist: {albums, tracks, etc.}
+	saveState = () => {
+		const lsData = {
+			albums: [...this.state.albums],
+			tracks: [...this.state.tracks],
+			features: [...this.state.features],
+			topTracks: [...this.state.topTracks],
+			staples: [...this.state.staples],
+			defaultStaples: [...this.state.defaultStaples],
+			songNo: this.state.songNo,
+			checked: [...this.state.checked],
+			setlistLocked: [...this.state.setlistLocked],
+			defaultChecked: [...this.state.defaultChecked],
+			setlist: [...this.state.setlist],
+			setlistNodes: [...this.state.setlistNodes],
+			chartData: { ...this.state.chartData },
+			albumsFiltered: [...this.state.albumsFiltered]
+		};
+		localStorage.setItem(this.state.artist.id, JSON.stringify(lsData));
+	};
+
+	handleSetlist = () => {
+		const {
+			albums,
+			tracks,
+			features,
+			checked,
+			songNo,
+			staples,
+			setlistLocked,
+			setlist
+		} = this.state;
+
+		const setlistNodes = pickSetlist(
+			tracks,
+			features,
+			checked,
+			songNo,
+			staples,
+			setlistLocked,
+			setlist
+		);
+
+		const setlistNew = setlistNodes.map(node => node.id);
+
+		const chartData = makeChartData(setlistNew, albums, tracks, features);
+
+		this.setState(
+			{
+				setlist: setlistNew,
+				setlistNodes,
+				chartData
+			},
+			() => this.saveState()
+		);
+	};
+
+	handleSongNo = songNo => {
+		const { checked } = this.state;
+
+		if (Number(songNo)) {
+			if (Number(songNo) > checked.length) {
+				this.setState({ songNo: checked.length });
+			} else {
+				this.setState({ songNo: Number(songNo) });
+			}
+		}
+	};
+
+	sortSetlist = (oldIndex, newIndex) => {
+		const { setlist, setlistNodes } = this.state;
+
+		const setlistNew = arrayMove([...setlist], oldIndex, newIndex);
+
+		const setlistNodesNew = [...setlistNodes].sort(
+			(a, b) => setlistNew.indexOf(a.id) - setlistNew.indexOf(b.id)
+		);
+		setlistNodesNew.forEach(
+			(track, index) => (setlistNodesNew[index].pos = index + 1)
+		);
+
+		this.setState({ setlist: setlistNew, setlistNodes: setlistNodesNew }, () =>
+			this.saveState()
+		);
+	};
+
+	handlePickSong = id => {
+		// replace a specific song in the setlist
+		const {
+			albums,
+			tracks,
+			features,
+			checked,
+			setlist,
+			setlistNodes,
+			songNo
+		} = this.state;
+
+		const newSong = pickSong(tracks, features, checked, setlist, songNo);
+
+		// find previous song's position and replace it
+		const index = setlist.indexOf(id);
+		newSong.node.pos = index + 1;
+		const setlistNodesNew = [...setlistNodes];
+		setlistNodesNew[index] = newSong.node;
+
+		const setlistNew = setlistNodesNew.map(node => node.id);
+
+		const chartData = makeChartData(setlistNew, albums, tracks, features);
+
+		this.setState(
+			{ setlist: setlistNew, setlistNodes: setlistNodesNew, chartData },
+			() => this.saveState()
+		);
+	};
+
+	handleDeleteSong = id => {
+		// remove a specific song from the setlist
+		const {
+			albums,
+			tracks,
+			features,
+			setlist,
+			setlistNodes,
+			songNo
+		} = this.state;
+
+		const setlistNew = [...setlist].filter(track => track !== id);
+		const setlistNodesNew = [...setlistNodes].filter(track => track.id !== id);
+		setlistNodesNew.forEach(
+			(track, index) => (setlistNodesNew[index].pos = index + 1)
+		);
+
+		const chartData = makeChartData(setlistNew, albums, tracks, features);
+
+		this.setState(
+			{
+				setlist: setlistNew,
+				setlistNodes: setlistNodesNew,
+				chartData,
+				songNo: songNo - 1
+			},
+			() => this.saveState()
+		);
+	};
+
+	handleAddSong = start => {
+		// add a song to the setlist
+		const {
+			albums,
+			tracks,
+			features,
+			checked,
+			setlist,
+			setlistNodes,
+			songNo
+		} = this.state;
+
+		const newSong = pickSong(tracks, features, checked, setlist);
+
+		let setlistNew;
+		let setlistNodesNew;
+
+		// if true is passed, then add song at the top of the set
+		if (start) {
+			setlistNew = [newSong.id, ...setlist];
+			setlistNodesNew = [newSong.node, ...setlistNodes];
+			setlistNodesNew.forEach(
+				(track, index) => (setlistNodesNew[index].pos = index + 1)
+			);
+		} else {
+			newSong.node.pos = setlist.length + 1;
+			setlistNew = [...setlist, newSong.id];
+			setlistNodesNew = [...setlistNodes, newSong.node];
+		}
+
+		const chartData = makeChartData(setlistNew, albums, tracks, features);
+
+		this.setState(
+			{
+				setlist: setlistNew,
+				setlistNodes: setlistNodesNew,
+				chartData,
+				songNo: songNo + 1
+			},
+			() => this.saveState()
+		);
+	};
+
+	handleLockSong = id => {
+		// lock a specific song in the setlist
+		// (will not be replaced under any circumstance)
+		var setlistLocked;
+		if (this.state.setlistLocked.includes(id)) {
+			setlistLocked = [...this.state.setlistLocked].filter(e => e !== id);
+		} else {
+			setlistLocked = [...this.state.setlistLocked, id];
+		}
+		this.setState({ setlistLocked }, () => this.saveState());
+	};
+
+	handleUnlockAll = () => {
+		this.setState({ setlistLocked: [] }, () => this.saveState());
+	};
+
+	handleReset = () => {
+		// X in the header used to change artist
+		this.setState({ ...initialState });
+	};
+
+	deleteAllStaples = () => {
+		this.setState({ staples: [] }, () => this.saveState());
+	};
+
+	deleteStaple = stapleId => {
+		const { staples } = this.state;
+
+		const newState = staples.filter(e => e !== stapleId);
+		this.setState({ staples: newState }, () => this.saveState());
+	};
+
+	restoreStaples = () => {
+		const { defaultStaples, checked } = this.state;
+
+		const newStaples = [...defaultStaples];
+
+		// have to add the staples to the song pool as well
+		const newChecked = [...checked];
+		newStaples.forEach(staple => {
+			if (!checked.includes(staple)) newChecked.push(staple);
+		});
+
+		this.setState({ staples: newStaples, checked: newChecked }, () =>
+			this.saveState()
+		);
+	};
+
+	restoreChecked = () => {
+		const { topTracks } = this.state;
+
+		const newState = [...topTracks];
+		this.setState({ checked: newState }, () => this.saveState());
+	};
+
+	onCheck = checked => {
+		// remove from staples when removed from song pool
+		const { staples } = this.state;
+
+		const newStaples = staples.filter(staple => checked.includes(staple));
+		this.setState({ checked, staples: newStaples }, () => this.saveState());
+	};
+
+	addStaple = stapleId => {
+		const { staples, checked } = this.state;
+
+		const newStaples = [...staples, stapleId];
+		// add to pool when added as staple
+		if (!checked.includes(stapleId)) {
+			const newChecked = [...checked, stapleId];
+			this.setState({ checked: newChecked, staples: newStaples }, () =>
+				this.saveState()
+			);
+		} else {
+			this.setState({ staples: newStaples }, () => this.saveState());
+		}
+	};
+
+	onAlbumsFilteredChange = value => {
+		// spread the state, find the appropriate object, change the checked value
+		const { albumsFiltered } = this.state;
+
+		const newAlbumsFiltered = [...albumsFiltered].map(filter =>
+			filter.value === value ? { ...filter, checked: !filter.checked } : filter
+		);
+		this.setState({ albumsFiltered: newAlbumsFiltered }, () =>
+			this.saveState()
+		);
+	};
+
+	// save in local storage as artist: {albums, tracks, etc.}
 	async handleData() {
-		//if the update date and artist are local storage is correct then load previous state
+		// if the update date and artist are local storage is correct then load previous state
 		const lsUpdateDate = localStorage.getItem("updateDate");
 		if (
 			localStorage.getItem(this.state.artist.id) &&
 			Number(lsUpdateDate) === updateDate
 		) {
 			const lsData = JSON.parse(localStorage.getItem(this.state.artist.id));
-			this.setState({ ...this.state, ...lsData, setLoading: false });
+			const newState = { ...this.state, ...lsData, setLoading: false };
+			this.setState(newState);
 		} else {
-			//otherwise load albums first
+			// otherwise load albums first
 			let albumList = await getAlbumList(this.state.artist.id);
 			albumList = albumList.map(album => album.id);
 			let data = {};
 
-			//chained fetch requests should really be simpler to write
+			// chained fetch requests should really be simpler to write
 			await Promise.all(
 				albumList.map(async album => {
 					data = await getAlbum(album);
@@ -112,12 +391,12 @@ export default class App extends Component {
 			});
 
 			if (!data.tracks || !data.albums || !data.features) {
-				//incredible error handling method
+				// incredible error handling method
 				this.setState({ error: true });
 				return;
 			}
 
-			//sort by release date
+			// sort by release date
 			data.albums = albumSort(data.albums);
 
 			let topTracks = data.tracks.filter(
@@ -134,7 +413,7 @@ export default class App extends Component {
 
 			if (topTracks.length > 0) {
 				topTracks =
-					//if there's less than 50 tracks, use a third of the tracks
+					// if there's less than 50 tracks, use a third of the tracks
 					Math.round(topTracks.length / 3) <= 49
 						? topTracks
 								.sort((a, b) => b.popularity - a.popularity)
@@ -145,8 +424,8 @@ export default class App extends Component {
 								.slice(0, 50)
 								.map(track => track.id);
 			} else {
-				//if there are no album tracks, use all tracks
-				//the entire filter segment is janky
+				// if there are no album tracks, use all tracks
+				// the entire filter segment is janky
 				albumsFiltered = [
 					{ label: "Albums", value: "album", checked: true },
 					{ label: "EPs and singles", value: "single", checked: true },
@@ -171,7 +450,7 @@ export default class App extends Component {
 
 			const staples = defaultStaples;
 
-			//default number of songs in generated setlist
+			// default number of songs in generated setlist
 			const songNo =
 				Math.round(topTracks.length / 2) <= 24
 					? Math.round(topTracks.length / 2)
@@ -196,34 +475,31 @@ export default class App extends Component {
 					defaultChecked: topTracks
 				},
 				() => {
+					const { albums, tracks, features } = this.state;
+
 					const setlistNodes = pickSetlist(
-						this.state.tracks,
-						this.state.features,
-						this.state.checked,
-						this.state.songNo,
-						this.state.staples
+						tracks,
+						features,
+						checked,
+						songNo,
+						staples
 					);
 
-					//id of arrays used to simplify some actions
+					// id of arrays used to simplify some actions
 					const setlist = setlistNodes.map(node => node.id);
 
-					//album distribution and song features charts
-					const chartData = makeChartData(
-						setlist,
-						this.state.albums,
-						this.state.tracks,
-						this.state.features
-					);
+					// album distribution and song features charts
+					const chartData = makeChartData(setlist, albums, tracks, features);
 
 					this.setState(
 						{
-							setlist: setlist,
-							setlistNodes: setlistNodes,
+							setlist,
+							setlistNodes,
 							chartData,
 							setLoading: false
 						},
 						() => {
-							//save state in local storage
+							// save state in local storage
 							this.saveState();
 							localStorage.setItem("updateDate", updateDate);
 						}
@@ -232,256 +508,6 @@ export default class App extends Component {
 			);
 		}
 	}
-
-	saveState = () => {
-		const lsData = {
-			albums: [...this.state.albums],
-			tracks: [...this.state.tracks],
-			features: [...this.state.features],
-			topTracks: [...this.state.topTracks],
-			staples: [...this.state.staples],
-			defaultStaples: [...this.state.defaultStaples],
-			songNo: this.state.songNo,
-			checked: [...this.state.checked],
-			setlistLocked: [...this.state.setlistLocked],
-			defaultChecked: [...this.state.defaultChecked],
-			setlist: [...this.state.setlist],
-			setlistNodes: [...this.state.setlistNodes],
-			chartData: { ...this.state.chartData },
-			albumsFiltered: [...this.state.albumsFiltered]
-		};
-		localStorage.setItem(this.state.artist.id, JSON.stringify(lsData));
-	};
-
-	handleSetlist = () => {
-		const setlistNodes = pickSetlist(
-			this.state.tracks,
-			this.state.features,
-			this.state.checked,
-			this.state.songNo,
-			this.state.staples,
-			this.state.setlistLocked,
-			this.state.setlist
-		);
-
-		const setlist = setlistNodes.map(node => node.id);
-
-		const chartData = makeChartData(
-			setlist,
-			this.state.albums,
-			this.state.tracks,
-			this.state.features
-		);
-
-		this.setState(
-			{
-				setlist,
-				setlistNodes,
-				chartData
-			},
-			() => this.saveState()
-		);
-	};
-
-	handleSongNo = songNo => {
-		if (Number(songNo)) {
-			if (Number(songNo) > this.state.checked.length) {
-				this.setState({ songNo: this.state.checked.length });
-			} else {
-				this.setState({ songNo: Number(songNo) });
-			}
-		}
-	};
-
-	sortSetlist = (oldIndex, newIndex) => {
-		const setlist = arrayMove([...this.state.setlist], oldIndex, newIndex);
-
-		const setlistNodes = [...this.state.setlistNodes].sort(
-			(a, b) => setlist.indexOf(a.id) - setlist.indexOf(b.id)
-		);
-		setlistNodes.forEach(
-			(track, index) => (setlistNodes[index].pos = index + 1)
-		);
-
-		this.setState({ setlist, setlistNodes }, () => this.saveState());
-	};
-
-	handlePickSong = id => {
-		//replace a specific song in the setlist
-		const newSong = pickSong(
-			this.state.tracks,
-			this.state.features,
-			this.state.checked,
-			this.state.setlist
-		);
-
-		//find previous song's position and replace it
-		const index = this.state.setlist.indexOf(id);
-		newSong.node.pos = index + 1;
-		const setlistNodes = [...this.state.setlistNodes];
-		setlistNodes[index] = newSong.node;
-
-		const setlist = setlistNodes.map(node => node.id);
-
-		const chartData = makeChartData(
-			setlist,
-			this.state.albums,
-			this.state.tracks,
-			this.state.features
-		);
-
-		this.setState({ setlist, setlistNodes, chartData }, () => this.saveState());
-	};
-
-	handleDeleteSong = id => {
-		//remove a specific song from the setlist
-		const setlist = [...this.state.setlist].filter(track => track !== id);
-		const setlistNodes = [...this.state.setlistNodes].filter(
-			track => track.id !== id
-		);
-		setlistNodes.forEach(
-			(track, index) => (setlistNodes[index].pos = index + 1)
-		);
-
-		const chartData = makeChartData(
-			setlist,
-			this.state.albums,
-			this.state.tracks,
-			this.state.features
-		);
-
-		this.setState(
-			{
-				setlist,
-				setlistNodes,
-				chartData,
-				songNo: this.state.songNo - 1
-			},
-			() => this.saveState()
-		);
-	};
-
-	handleAddSong = start => {
-		//add a song to the setlist
-		const newSong = pickSong(
-			this.state.tracks,
-			this.state.features,
-			this.state.checked,
-			this.state.setlist
-		);
-
-		let setlist, setlistNodes;
-
-		//if true is passed, then add song at the top of the set
-		if (start) {
-			setlist = [newSong.id, ...this.state.setlist];
-			setlistNodes = [newSong.node, ...this.state.setlistNodes];
-			setlistNodes.forEach(
-				(track, index) => (setlistNodes[index].pos = index + 1)
-			);
-		} else {
-			newSong.node.pos = this.state.setlist.length + 1;
-			setlist = [...this.state.setlist, newSong.id];
-			setlistNodes = [...this.state.setlistNodes, newSong.node];
-		}
-
-		const chartData = makeChartData(
-			setlist,
-			this.state.albums,
-			this.state.tracks,
-			this.state.features
-		);
-
-		this.setState(
-			{
-				setlist,
-				setlistNodes,
-				chartData,
-				songNo: this.state.songNo + 1
-			},
-			() => this.saveState()
-		);
-	};
-
-	handleLockSong = id => {
-		//lock a specific song in the setlist
-		//(will not be replaced under any circumstance)
-		var setlistLocked;
-		if (this.state.setlistLocked.includes(id)) {
-			setlistLocked = [...this.state.setlistLocked].filter(e => e !== id);
-		} else {
-			setlistLocked = [...this.state.setlistLocked, id];
-		}
-		this.setState({ setlistLocked }, () => this.saveState());
-	};
-
-	handleUnlockAll = () => {
-		this.setState({ setlistLocked: [] }, () => this.saveState());
-	};
-
-	handleReset = () => {
-		//X in the header used to change artist
-		this.setState({ ...initialState });
-	};
-
-	deleteAllStaples = () => {
-		this.setState({ staples: [] }, () => this.saveState());
-	};
-
-	deleteStaple = stapleId => {
-		const newState = this.state.staples.filter(e => e !== stapleId);
-		this.setState({ staples: newState }, () => this.saveState());
-	};
-
-	restoreStaples = () => {
-		const newStaples = [...this.state.defaultStaples];
-
-		//have to add the staples to the song pool as well
-		const newChecked = [...this.state.checked];
-		newStaples.forEach(staple => {
-			if (!this.state.checked.includes(staple)) newChecked.push(staple);
-		});
-
-		this.setState({ staples: newStaples, checked: newChecked }, () =>
-			this.saveState()
-		);
-	};
-
-	restoreChecked = () => {
-		const newState = [...this.state.topTracks];
-		this.setState({ checked: newState }, () => this.saveState());
-	};
-
-	onCheck = checked => {
-		//remove from staples when removed from song pool
-		const newStaples = this.state.staples.filter(staple =>
-			checked.includes(staple)
-		);
-		this.setState({ checked, staples: newStaples }, () => this.saveState());
-	};
-
-	addStaple = stapleId => {
-		const newStaples = [...this.state.staples, stapleId];
-		//add to pool when added as staple
-		if (!this.state.checked.includes(stapleId)) {
-			const newChecked = [...this.state.checked, stapleId];
-			this.setState({ checked: newChecked, staples: newStaples }, () =>
-				this.saveState()
-			);
-		} else {
-			this.setState({ staples: newStaples }, () => this.saveState());
-		}
-	};
-
-	onAlbumsFilteredChange = value => {
-		//spread the state, find the appropriate object, change the checked value
-		const newAlbumsFiltered = [...this.state.albumsFiltered].map(filter =>
-			filter.value === value ? { ...filter, checked: !filter.checked } : filter
-		);
-		this.setState({ albumsFiltered: newAlbumsFiltered }, () =>
-			this.saveState()
-		);
-	};
 
 	render() {
 		const {
@@ -541,7 +567,7 @@ export default class App extends Component {
 								<Albums
 									albums={albums}
 									checked={checked}
-									onCheck={checked => this.onCheck(checked)}
+									onCheck={e => this.onCheck(e)}
 									restoreChecked={this.restoreChecked}
 									checkDefaultAlbums={checkIdentical(checked, defaultChecked)}
 									staples={staples}

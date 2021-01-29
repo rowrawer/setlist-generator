@@ -1,12 +1,12 @@
 import React, { PureComponent } from "react";
-import AlbumsCheckboxTree from "./Albums/AlbumsCheckboxTree";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
-import AlbumsAppBar from "./Albums/AlbumsAppBar";
 import Menu from "@material-ui/core/Menu";
 import FormGroup from "@material-ui/core/FormGroup";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import AlbumsAppBar from "./Albums/AlbumsAppBar";
+import AlbumsCheckboxTree from "./Albums/AlbumsCheckboxTree";
 
 export default class Albums extends PureComponent {
 	constructor(props) {
@@ -24,13 +24,13 @@ export default class Albums extends PureComponent {
 			let nodesFiltered = this.props.albums;
 			if (this.state.filterText.length > 0) {
 				nodesFiltered = nodesFiltered.map(album => {
-					//go through albums and filter through tracks by name
+					// go through albums and filter through tracks by name
 					const newTracks = album.tracks.items.filter(track =>
 						track.name
 							.toLocaleLowerCase()
 							.includes(this.state.filterText.toLocaleLowerCase())
 					);
-					//not very elegant but at least it works
+					// not very elegant but at least it works
 					return { ...album, tracks: { items: newTracks } };
 				});
 			}
@@ -44,7 +44,7 @@ export default class Albums extends PureComponent {
 
 	onExpand = expanded => this.setState({ expanded });
 
-	//open album filter list menu
+	// open album filter list menu
 	handleMenuClick = e => this.setState({ anchorEl: e.currentTarget });
 
 	handleMenuClose = () => this.setState({ anchorEl: null });
@@ -72,9 +72,9 @@ export default class Albums extends PureComponent {
 				>
 					<FormGroup>
 						{albumsFiltered &&
-							albumsFiltered.map(filter => {
-								return (
-									//only show a filter when needed
+							albumsFiltered.map(
+								filter =>
+									// only show a filter when needed
 									nodesFiltered.filter(
 										album => album.album_type === filter.value
 									).length > 0 && (
@@ -94,8 +94,7 @@ export default class Albums extends PureComponent {
 											/>
 										</MenuItem>
 									)
-								);
-							})}
+							)}
 					</FormGroup>
 				</Menu>
 				<AlbumsAppBar

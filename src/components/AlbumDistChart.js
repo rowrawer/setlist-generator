@@ -18,9 +18,7 @@ function AlbumDistChart(props) {
 		return colorArray;
 	};
 
-	const chartDataSorted = [...chartData].sort((a, b) => {
-		return b.value - a.value;
-	});
+	const chartDataSorted = [...chartData].sort((a, b) => b.value - a.value);
 
 	return (
 		<>
@@ -45,26 +43,22 @@ function AlbumDistChart(props) {
 						/>
 					</div>
 					<List className="MuiList-prod">
-						{chartDataSorted.map(album => {
-							return (
-								<ListItem
-									key={album.label}
-									className="MuiListItem-prod"
-									divider
-								>
-									<ListItemAvatar className="MuiListItemAvatar-prod">
-										<Avatar
-											style={{ backgroundColor: album.color }}
-											className="MuiAvatar-prod"
-										></Avatar>
-									</ListItemAvatar>
-									<ListItemText
-										className="MuiListItemText-prod"
-										primary={`${album.label} [${album.year}]: ${album.value}`}
-									/>
-								</ListItem>
-							);
-						})}
+						{chartDataSorted.map(album => (
+							<ListItem key={album.label} className="MuiListItem-prod" divider>
+								<ListItemAvatar className="MuiListItemAvatar-prod">
+									<Avatar
+										style={{ backgroundColor: album.color }}
+										className="MuiAvatar-prod"
+									>
+										{album.label[0]}
+									</Avatar>
+								</ListItemAvatar>
+								<ListItemText
+									className="MuiListItemText-prod"
+									primary={`${album.label} [${album.year}]: ${album.value}`}
+								/>
+							</ListItem>
+						))}
 					</List>
 				</>
 			)}

@@ -1,9 +1,10 @@
 @import-normalize;
 @import url("https://fonts.googleapis.com/css?family=Muli:300,600&display=swap");
 
-html, body {
+html,
+body {
 	font-family: "Muli", sans-serif !important;
-	font-size: calc((1vw + 1vh + .5vmin) / 2);
+	font-size: calc((1vw + 1vh + 0.5vmin) / 2);
 	margin: 0;
 	padding: 0;
 }
@@ -53,7 +54,7 @@ html, body {
 #HeaderC {
 	grid-area: a;
 	white-space: nowrap;
-  overflow: hidden;
+	overflow: hidden;
 	text-overflow: ellipsis;
 	text-align: center;
 }
@@ -89,13 +90,14 @@ html, body {
 }
 
 @media only screen and (orientation: portrait) {
-	html, body {
+	html,
+	body {
 		width: 100%;
 		height: 100%;
 		margin: 0;
 		padding: 0;
 		font-family: "Muli", sans-serif !important;
-		font-size: calc((1vw + 1vh + .5vmin) / 1);
+		font-size: calc((1vw + 1vh + 0.5vmin) / 1);
 	}
 
 	.App {
@@ -103,13 +105,13 @@ html, body {
 		padding: 0.5rem;
 		width: 100%;
 		grid-template:
-		"a"
-		"b"
-		"e"
-		"f"
-		"c"
-		"d"
-		"g"
+			"a"
+			"b"
+			"e"
+			"f"
+			"c"
+			"d"
+			"g";
 	}
 
 	#SetlistC {
@@ -141,7 +143,24 @@ a {
 	padding: 0.5rem 0 !important;
 }
 
-#StaplesC .MuiListItem-prod, #AlbumDistChartC .MuiListItem-prod, #HeaderC .MuiListItem-prod, #AlbumsC .MuiListItem-prod {
+.MuiTypography-prod {
+	flex-grow: 1;
+}
+
+.MuiList-prod {
+	width: 27.5rem !important;
+	padding: 1vh 0 !important;
+}
+
+.MuiListItemIcon-prod {
+	min-width: 0 !important;
+	padding: 0 0.5rem !important;
+}
+
+#StaplesC .MuiListItem-prod,
+#AlbumDistChartC .MuiListItem-prod,
+#HeaderC .MuiListItem-prod,
+#AlbumsC .MuiListItem-prod {
 	padding-top: 0 !important;
 	padding-bottom: 0 !important;
 	min-height: inherit !important;
@@ -163,14 +182,13 @@ a {
 	padding: 0 !important;
 }
 
-
 #HeaderC .MuiTextField-prod {
 	margin: 0 !important;
 }
 
 #HeaderC .MuiListItem-prod .MuiTypography-prod {
 	white-space: nowrap;
-  overflow: hidden;
+	overflow: hidden;
 	text-overflow: ellipsis;
 	display: block !important;
 }
@@ -184,7 +202,7 @@ a {
 	line-height: 1.5;
 	font-weight: 600;
 	white-space: nowrap;
-  overflow: hidden;
+	overflow: hidden;
 	text-overflow: ellipsis;
 	margin-right: 3.25em !important;
 	display: block !important;
@@ -196,7 +214,7 @@ a {
 
 #SetlistC .MuiListItem-prod .expanded {
 	white-space: initial;
-  overflow: initial;
+	overflow: initial;
 	text-overflow: initial;
 	margin-right: 8rem !important;
 }
@@ -211,11 +229,8 @@ a {
 	cursor: grab !important;
 }
 
-.MuiTypography-prod {
-	flex-grow: 1;
-}
-
-#StaplesC .MuiToolbar-prod .MuiTypography-prod, #AlbumsC .MuiToolbar-prod .MuiTypography-prod {
+#StaplesC .MuiToolbar-prod .MuiTypography-prod,
+#AlbumsC .MuiToolbar-prod .MuiTypography-prod {
 	margin-right: 0.5rem !important;
 }
 
@@ -223,11 +238,6 @@ a {
 	width: 27.5rem !important;
 	margin-left: auto !important;
 	margin-right: auto !important;
-}
-
-.MuiList-prod {
-	width: 27.5rem !important;
-	padding: 1vh 0 !important;
 }
 
 .MuiListItemAvatar-prod {
@@ -244,11 +254,6 @@ a {
 .MuiFormControl-prod {
 	margin: 0 !important;
 	padding: 0 0 0 0.5rem !important;
-}
-
-.MuiListItemIcon-prod {
-	min-width: 0 !important;
-	padding: 0 0.5rem !important
 }
 
 .chartContainer {
@@ -282,11 +287,11 @@ body > li span {
 	font-size: 1.1rem !important;
 	font-weight: 600 !important;
 	white-space: nowrap !important;
-  overflow: hidden !important;
+	overflow: hidden !important;
 	text-overflow: ellipsis !important;
 	display: block !important;
 }
 
 body > li button {
-display: none !important;
+	display: none !important;
 }

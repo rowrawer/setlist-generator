@@ -11,24 +11,23 @@ export function pickSetlist(
 	setlistLocked = [],
 	oldSetlist = []
 ) {
-	const trackList = tracks.filter(track => {
-		//only use suitable tracks
-		return (
+	const trackList = tracks.filter(
+		track =>
+			// only use suitable tracks
 			checked.includes(track.id) &&
 			!staples.includes(track.id) &&
 			!setlistLocked.includes(track.id)
-		);
-	});
+	);
 
 	let setlist = [];
 
 	if (staples.length > 0) {
-		//ensure that staples are included in the set
+		// ensure that staples are included in the set
 		const shuffledStaples = chance.shuffle(staples);
 		shuffledStaples.forEach((staple, index) => {
 			if (index < songNo) {
 				if (oldSetlist.length > 0 && setlistLocked.length > 0) {
-					//take into account the amount of locked songs
+					// take into account the amount of locked songs
 					if (!oldSetlist.includes(staple) && index <= setlistLocked.length)
 						setlist.push(staple);
 				} else {
@@ -41,11 +40,11 @@ export function pickSetlist(
 	const songNoArrayNo = songNo - setlistLocked.length - setlist.length;
 
 	if (songNoArrayNo > 0) {
-		//if the entire setlist wasn't populated by staples
+		// if the entire setlist wasn't populated by staples
 		const trackIds = trackList.map(track => track.id);
 		const trackWeight = trackList.map(track => track.popularity || 1);
 
-		//"do forEach this amount of times"
+		// "do forEach this amount of times"
 		const songNoArray = [...Array(songNoArrayNo)];
 		songNoArray.forEach(() => {
 			const pick = chance.weighted(trackIds, trackWeight);
@@ -56,18 +55,14 @@ export function pickSetlist(
 	}
 	setlist = chance.shuffle(setlist);
 
-	//add locked songs back where they were
+	// add locked songs back where they were
 	setlistLocked.forEach(e => {
 		setlist.splice(oldSetlist.indexOf(e), 0, e);
 	});
 
 	const setlistNodes = tracks
-		.filter(track => {
-			return setlist.includes(track.id);
-		})
-		.sort((a, b) => {
-			return setlist.indexOf(a.id) - setlist.indexOf(b.id);
-		})
+		.filter(track => setlist.includes(track.id))
+		.sort((a, b) => setlist.indexOf(a.id) - setlist.indexOf(b.id))
 		.map(track => {
 			const feature = features.find(e => e.id === track.id);
 			return {

@@ -4,7 +4,7 @@ export async function getArtistsList(query) {
 			if (!res.ok) {
 				if (res.status === 500) {
 					setTimeout(() => {
-						//nothing fancy
+						// nothing fancy
 						getArtistsList(query);
 					}, 3000);
 				} else {
@@ -27,7 +27,7 @@ export async function getArtist(query) {
 			if (!res.ok) {
 				if (res.status === 500) {
 					setTimeout(() => {
-						//nothing fancy
+						// nothing fancy
 						getArtist(query);
 					}, 3000);
 				} else {
@@ -70,7 +70,7 @@ export async function getAlbumList(artist) {
 		});
 }
 
-//rewrite the whole data thing
+// rewrite the whole data thing
 let data = { albums: [], tracks: [], features: [] };
 
 export async function getAlbum(album) {
@@ -91,28 +91,28 @@ export async function getAlbum(album) {
 		})
 		.then(json => {
 			if (json) {
-				//deluxe type for filter - not ideal but works
-				json =
+				// deluxe type for filter - not ideal but works
+				const jsonRes =
 					(json.name.includes("Deluxe") &&
 						(json.name.includes("Edition") || json.name.includes("Version"))) ||
 					json.name.includes("(Deluxe)")
 						? { ...json, album_type: "deluxe" }
 						: json;
-				data.albums.push(json);
-				let tracks = json.tracks.items.map(track => track.id); //extract track id array from json
-				return tracks;
+				data.albums.push(jsonRes);
+				const tracksRes = jsonRes.tracks.items.map(track => track.id); // extract track id array from json
+				return tracksRes;
 			}
 		})
 		.catch(err => console.log(err));
 
 	await getTracks(album, tracks);
-	//so as to not hammer the server with requests
+	// so as to not hammer the server with requests
 	await new Promise(resolve => setTimeout(resolve, 500));
 	return data;
 }
 
 async function getTracks(album, tracks) {
-	//have to do this because the spotify api doesn't return the popularity value in getAlbum requests
+	// have to do this because the spotify api doesn't return the popularity value in getAlbum requests
 	await fetch(`api/getTracks/${album}/${tracks}`)
 		.then(res => {
 			if (!res.ok) {
@@ -135,7 +135,7 @@ async function getTracks(album, tracks) {
 }
 
 async function getAudioFeatures(album, tracks) {
-	//for stuff like bpm, key, etc.
+	// for stuff like bpm, key, etc.
 	await fetch(`api/getAudioFeatures/${album}/${tracks}`)
 		.then(res => {
 			if (!res.ok) {

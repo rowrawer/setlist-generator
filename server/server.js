@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+
 const app = express();
 const helmet = require("helmet");
 const SpotifyWebApi = require("spotify-web-api-node");
@@ -36,14 +37,14 @@ const spotifyApi = new SpotifyWebApi({
 function getCredentials() {
 	spotifyApi.clientCredentialsGrant().then(
 		data => {
-			spotifyApi.setAccessToken(data.body["access_token"]);
+			spotifyApi.setAccessToken(data.body.access_token);
 		},
 		err => {
 			throw err;
 		}
 	);
 }
-//renew token every 59 minutes
+// renew token every 59 minutes
 getCredentials();
 setInterval(getCredentials, 3540000);
 
@@ -55,7 +56,7 @@ app.use((err, req, res, next) => {
 });
 
 app.get("/api/getTracks/:album/:id", (req, res, next) => {
-	//timestamp used to send results cached by the server
+	// timestamp used to send results cached by the server
 
 	const dbTracks = db.tracks[req.params.album];
 

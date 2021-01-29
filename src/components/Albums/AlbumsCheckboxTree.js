@@ -22,8 +22,8 @@ const AlbumEntry = ({
 	expanded
 }) => {
 	const checkBoxState = album.tracks.items.filter(track =>
-		//establish amount of checked tracks
-		//(determines state of album checkbox)
+		// establish amount of checked tracks
+		// (determines state of album checkbox)
 		checked.includes(track.id)
 	);
 
@@ -59,7 +59,7 @@ const AlbumEntry = ({
 					/>
 				</ListItemIcon>
 				<ListItemAvatar className="MuiListItemAvatar-prod">
-					<Avatar src={album.images[2].url} className="MuiAvatar-prod"></Avatar>
+					<Avatar src={album.images[2].url} className="MuiAvatar-prod" />
 				</ListItemAvatar>
 				<ListItemText
 					primary={`${album.name} [${album.release_date.substring(0, 4)}]`}
@@ -79,8 +79,8 @@ const TrackEntries = ({
 	staples,
 	addStaple,
 	deleteStaple
-}) => {
-	return tracks.map(
+}) =>
+	tracks.map(
 		track =>
 			expanded.includes(album) && (
 				<ListItem
@@ -119,7 +119,6 @@ const TrackEntries = ({
 				</ListItem>
 			)
 	);
-};
 
 function AlbumsCheckboxTree(props) {
 	const {
@@ -158,7 +157,7 @@ function AlbumsCheckboxTree(props) {
 	const handleCheckAlbum = id => {
 		var newChecked = [...checked];
 
-		//check or uncheck all tracks belonging to album
+		// check or uncheck all tracks belonging to album
 		if (checked.filter(track => id.includes(track)).length === id.length) {
 			newChecked = checked.filter(track => !id.includes(track));
 		} else {
@@ -171,12 +170,12 @@ function AlbumsCheckboxTree(props) {
 		<List className="MuiList-prod">
 			{nodes.map(
 				(album, i) =>
-					//only display if not filtered out or already in pool
+					// only display if not filtered out or already in pool
 					(albumsFiltered.find(filter => filter.value === album.album_type)
 						.checked ||
 						album.tracks.items.filter(track => checked.includes(track.id))
 							.length > 0) && (
-						//add divider if different type than previous element in array
+						// add divider if different type than previous element in array
 						<React.Fragment key={album.id}>
 							{nodes[i - 1] && nodes[i - 1].album_type !== album.album_type && (
 								<Divider />

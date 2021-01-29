@@ -2,13 +2,13 @@ import React, { PureComponent } from "react";
 import copy from "clipboard-copy";
 import Snackbar from "@material-ui/core/Snackbar";
 import { SortableContainer } from "react-sortable-hoc";
-import SetlistListItem from "./Setlist/SetlistListItem";
 import List from "@material-ui/core/List";
-import SetlistAppBar from "./Setlist/SetlistAppBar";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
 import VerticalAlignBottomIcon from "@material-ui/icons/VerticalAlignBottom";
+import SetlistAppBar from "./Setlist/SetlistAppBar";
+import SetlistListItem from "./Setlist/SetlistListItem";
 
 export default class Setlist extends PureComponent {
 	constructor(props) {
@@ -21,7 +21,7 @@ export default class Setlist extends PureComponent {
 	}
 
 	handleExpand = id => {
-		//add or delete from list of expanded entries
+		// add or delete from list of expanded entries
 		var expanded;
 		if (this.state.expanded.includes(id)) {
 			expanded = [...this.state.expanded].filter(e => e !== id);
@@ -36,7 +36,7 @@ export default class Setlist extends PureComponent {
 	};
 
 	copySetlist = setlistNodes => {
-		//copies setlist as a plain text list
+		// copies setlist as a plain text list
 		const formattedSetlist = [];
 		setlistNodes.forEach(track => {
 			formattedSetlist.push(`${track.pos}. ${track.name}`);
@@ -50,7 +50,7 @@ export default class Setlist extends PureComponent {
 		this.setState({ openSnackbar: false });
 	};
 
-	//open add song menu
+	// open add song menu
 	handleMenuClick = e => this.setState({ anchorEl: e.currentTarget });
 
 	handleMenuClose = () => this.setState({ anchorEl: null });
@@ -74,30 +74,26 @@ export default class Setlist extends PureComponent {
 
 		const { openSnackbar, expanded, anchorEl } = this.state;
 
-		const SortableList = SortableContainer(() => {
-			return (
-				<List className="MuiList-prod">
-					{setlistNodes.map((track, index) => {
-						return (
-							<SetlistListItem
-								index={index}
-								key={track.id}
-								track={track}
-								setlistLength={setlistNodes.length}
-								setlistLocked={setlistLocked.includes(track.id)}
-								expanded={expanded.includes(track.id)}
-								checkedLength={checked.length}
-								songNo={songNo}
-								handlePickSong={handlePickSong}
-								handleLockSong={handleLockSong}
-								handleDeleteSong={handleDeleteSong}
-								handleExpand={this.handleExpand}
-							/>
-						);
-					})}
-				</List>
-			);
-		});
+		const SortableList = SortableContainer(() => (
+			<List className="MuiList-prod">
+				{setlistNodes.map((track, index) => (
+					<SetlistListItem
+						index={index}
+						key={track.id}
+						track={track}
+						setlistLength={setlistNodes.length}
+						setlistLocked={setlistLocked.includes(track.id)}
+						expanded={expanded.includes(track.id)}
+						checkedLength={checked.length}
+						songNo={songNo}
+						handlePickSong={handlePickSong}
+						handleLockSong={handleLockSong}
+						handleDeleteSong={handleDeleteSong}
+						handleExpand={this.handleExpand}
+					/>
+				))}
+			</List>
+		));
 
 		return (
 			!setLoading && (

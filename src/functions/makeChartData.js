@@ -1,4 +1,3 @@
-import { albumSort } from "./albumSort";
 import moment from "moment";
 import red from "@material-ui/core/colors/red";
 import purple from "@material-ui/core/colors/purple";
@@ -12,6 +11,7 @@ import orange from "@material-ui/core/colors/orange";
 import brown from "@material-ui/core/colors/brown";
 import blueGrey from "@material-ui/core/colors/blueGrey";
 import Chance from "chance";
+import { albumSort } from "./albumSort";
 
 const chance = new Chance();
 
@@ -35,7 +35,7 @@ colors.forEach(hue => {
 	let shade = 100;
 	colorsProcessed.push(hue[shade]);
 
-	[...Array(4)].forEach(i => {
+	[...Array(4)].forEach(() => {
 		shade += 200;
 		colorsProcessed.push(hue[shade]);
 	});
@@ -107,7 +107,7 @@ export const makeChartData = (setlist, albums, tracks, features) => {
 
 	audioFeaturesChartData.release_date.min = sortedYear[sortedYear.length - 1];
 
-	audioFeaturesChartData.release_date.max = sortedYear[0];
+	[audioFeaturesChartData.release_date.max] = sortedYear;
 
 	audioFeaturesChartData.release_date.avg = Math.round(
 		sortedYear.reduce((a, b) => a + b) / sortedYear.length

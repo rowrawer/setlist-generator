@@ -4,7 +4,6 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import IconButton from "@material-ui/core/IconButton";
-import { getArtistsList } from "../functions/getData";
 import MenuList from "@material-ui/core/MenuList";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItem from "@material-ui/core/ListItem";
@@ -17,6 +16,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import copy from "clipboard-copy";
 import Snackbar from "@material-ui/core/Snackbar";
 import FileCopyIcon from "@material-ui/icons/FileCopyOutlined";
+import { getArtistsList } from "../functions/getData";
 
 export default class Header extends PureComponent {
 	constructor(props) {
@@ -28,15 +28,15 @@ export default class Header extends PureComponent {
 		};
 	}
 
-	handleSnackbarClose = () => {
-		this.setState({ openSnackbar: false });
-	};
-
 	async onFilterChange() {
-		//no onchange search because that would be a nightmare for the server
+		// no onchange search because that would be a nightmare for the server
 		const artistsFiltered = await getArtistsList(this.state.filterText);
 		this.setState({ artistsFiltered });
 	}
+
+	handleSnackbarClose = () => {
+		this.setState({ openSnackbar: false });
+	};
 
 	onFilterText = e => {
 		this.setState({ filterText: e.target.value });
@@ -47,14 +47,14 @@ export default class Header extends PureComponent {
 	};
 
 	prepareName = name => {
-		//remove "the" from artist names as the header already includes it
-		let preparedName = name.toLowerCase().split(" ");
+		// remove "the" from artist names as the header already includes it
+		const preparedName = name.toLowerCase().split(" ");
 		if (preparedName[0] === "the") preparedName.shift();
 		return preparedName.join(" ");
 	};
 
 	copyArtist = artist => {
-		//copies url directly to artist page
+		// copies url directly to artist page
 		copy(
 			`${window.location.protocol}//${window.location.host}/?a=${artist}`
 		).then(() => {
@@ -74,7 +74,7 @@ export default class Header extends PureComponent {
 					</Typography>
 				)}
 				{!error && !artist.id ? (
-					//show search bar and list if no artist found
+					// show search bar and list if no artist found
 					<>
 						<TextField
 							className="MuiTextField-prod"
@@ -109,27 +109,29 @@ export default class Header extends PureComponent {
 						<div className="MuiListContainer">
 							<MenuList className="MuiList-prod">
 								{artistsFiltered &&
-									artistsFiltered.map(artist => (
+									artistsFiltered.map(artistEl => (
 										<MenuItem
-											key={artist.id}
+											key={artistEl.id}
 											className="MuiListItem-prod"
 											divider
 											disableRipple
 											onClick={() => {
-												handleSearch(artist);
+												handleSearch(artistEl);
 											}}
 										>
-											{artist.images[2] && (
+											{artistEl.images[2] && (
 												<ListItemAvatar className="MuiListItemAvatar-prod">
 													<Avatar
-														src={artist.images[2].url}
+														src={artistEl.images[2].url}
 														className="MuiAvatar-prod"
-													></Avatar>
+													/>
 												</ListItemAvatar>
 											)}
 											<ListItemText
-												primary={artist.name}
-												style={!artist.images[2] ? { paddingLeft: "2rem" } : {}}
+												primary={artistEl.name}
+												style={
+													!artistEl.images[2] ? { paddingLeft: "2rem" } : {}
+												}
 												primaryTypographyProps={{
 													className: "MuiTypography-prod"
 												}}
@@ -154,7 +156,7 @@ export default class Header extends PureComponent {
 						</div>
 					</>
 				) : (
-					//otherwise show the actual header
+					// otherwise show the actual header
 					<>
 						<Snackbar
 							anchorOrigin={{ vertical: "top", horizontal: "right" }}

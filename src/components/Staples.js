@@ -22,7 +22,7 @@ export default class Staples extends PureComponent {
 	}
 
 	onFilterChange = e => {
-		//search through tracks by name
+		// search through tracks by name
 		this.setState({ filterText: e.target.value }, () => {
 			const tracksFiltered = this.props.tracks.filter(track => {
 				if (
@@ -61,9 +61,7 @@ export default class Staples extends PureComponent {
 
 		const { filterText, tracksFiltered } = this.state;
 
-		const data = tracks.filter(track => {
-			return staples.includes(track.id);
-		});
+		const data = tracks.filter(track => staples.includes(track.id));
 
 		return (
 			<>
@@ -85,7 +83,7 @@ export default class Staples extends PureComponent {
 									<Avatar
 										src={staple.album.images[2].url}
 										className="MuiAvatar-prod"
-									></Avatar>
+									/>
 								</ListItemAvatar>
 								<ListItemText
 									primary={staple.name}
@@ -121,7 +119,7 @@ export default class Staples extends PureComponent {
 									<Avatar
 										src={staple.album.images[2].url}
 										className="MuiAvatar-prod"
-									></Avatar>
+									/>
 								</ListItemAvatar>
 								<ListItemText
 									primary={staple.name}
