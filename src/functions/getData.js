@@ -1,6 +1,7 @@
+/* eslint-disable no-return-await */
 export async function getArtistsList(query) {
 	return await fetch(`api/getArtistsList/${query}`)
-		.then(res => {
+		.then((res) => {
 			if (!res.ok) {
 				if (res.status === 500) {
 					setTimeout(() => {
@@ -13,7 +14,7 @@ export async function getArtistsList(query) {
 			}
 			return res.json();
 		})
-		.then(json => {
+		.then((json) => {
 			if (json) {
 				if (json.artists.items.length === 0) return false;
 				return json.artists.items;
@@ -23,7 +24,7 @@ export async function getArtistsList(query) {
 
 export async function getArtist(query) {
 	return await fetch(`api/getArtist/${query}`)
-		.then(res => {
+		.then((res) => {
 			if (!res.ok) {
 				if (res.status === 500) {
 					setTimeout(() => {
@@ -36,7 +37,7 @@ export async function getArtist(query) {
 			}
 			return res.json();
 		})
-		.then(json => {
+		.then((json) => {
 			if (json) {
 				if (json.length === 0) return false;
 				return json;
@@ -46,7 +47,7 @@ export async function getArtist(query) {
 
 export async function getAlbumList(artist) {
 	return await fetch(`api/getAlbumList/${artist}`)
-		.then(res => {
+		.then((res) => {
 			if (!res.ok) {
 				if (res.status === 500) {
 					setTimeout(() => {
@@ -58,12 +59,14 @@ export async function getAlbumList(artist) {
 			}
 			return res.json();
 		})
-		.then(json => {
+		.then((json) => {
 			if (json) {
 				const names = [];
-				return json.items.filter(album => {
-					const duplicate = names.includes(album.name);
-					names.push(album.name);
+				return json.items.filter((album) => {
+					const duplicate = names.includes(
+						album.name + album.release_date.slice(0, 4)
+					);
+					names.push(album.name + album.release_date.slice(0, 4));
 					return !duplicate;
 				});
 			}
@@ -77,7 +80,7 @@ export async function getAlbum(album) {
 	data = { albums: [], tracks: [], features: [] };
 
 	const tracks = await fetch(`api/getAlbum/${album}`)
-		.then(res => {
+		.then((res) => {
 			if (!res.ok) {
 				if (res.status === 500) {
 					setTimeout(() => {
@@ -89,7 +92,7 @@ export async function getAlbum(album) {
 			}
 			return res.json();
 		})
-		.then(json => {
+		.then((json) => {
 			if (json) {
 				// deluxe type for filter - not ideal but works
 				const jsonRes =
@@ -99,22 +102,22 @@ export async function getAlbum(album) {
 						? { ...json, album_type: "deluxe" }
 						: json;
 				data.albums.push(jsonRes);
-				const tracksRes = jsonRes.tracks.items.map(track => track.id); // extract track id array from json
+				const tracksRes = jsonRes.tracks.items.map((track) => track.id); // extract track id array from json
 				return tracksRes;
 			}
 		})
-		.catch(err => console.log(err));
+		.catch((err) => console.log(err));
 
 	await getTracks(album, tracks);
 	// so as to not hammer the server with requests
-	await new Promise(resolve => setTimeout(resolve, 500));
+	await new Promise((resolve) => setTimeout(resolve, 500));
 	return data;
 }
 
 async function getTracks(album, tracks) {
 	// have to do this because the spotify api doesn't return the popularity value in getAlbum requests
 	await fetch(`api/getTracks/${album}/${tracks}`)
-		.then(res => {
+		.then((res) => {
 			if (!res.ok) {
 				if (res.status === 500) {
 					setTimeout(() => {
@@ -126,10 +129,10 @@ async function getTracks(album, tracks) {
 			}
 			return res.json();
 		})
-		.then(json => {
+		.then((json) => {
 			if (json) data.tracks.push(...json);
 		})
-		.catch(err => console.log(err));
+		.catch((err) => console.log(err));
 
 	await getAudioFeatures(album, tracks);
 }
@@ -137,7 +140,7 @@ async function getTracks(album, tracks) {
 async function getAudioFeatures(album, tracks) {
 	// for stuff like bpm, key, etc.
 	await fetch(`api/getAudioFeatures/${album}/${tracks}`)
-		.then(res => {
+		.then((res) => {
 			if (!res.ok) {
 				if (res.status === 500) {
 					setTimeout(() => {
@@ -149,8 +152,8 @@ async function getAudioFeatures(album, tracks) {
 			}
 			return res.json();
 		})
-		.then(json => {
+		.then((json) => {
 			if (json) data.features.push(...json);
 		})
-		.catch(err => console.log(err));
+		.catch((err) => console.log(err));
 }

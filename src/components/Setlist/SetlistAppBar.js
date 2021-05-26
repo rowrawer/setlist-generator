@@ -14,8 +14,8 @@ import AddIcon from "@material-ui/icons/Add";
 const totalDuration = (setlistNodes, tracks) => {
 	momentDurationFormatSetup(moment);
 	const totalTracks = tracks
-		.filter(track => setlistNodes.find(e => e.id === track.id))
-		.map(track => track.duration_ms)
+		.filter((track) => setlistNodes.find((e) => e.id === track.id))
+		.map((track) => track.duration_ms)
 		.reduce((a, b) => a + b);
 	return moment.duration(totalTracks).format("mm:ss");
 };
@@ -50,7 +50,7 @@ function SetlistAppBar(props) {
 				<TextField
 					required
 					value={songNo}
-					onChange={e => handleSongNo(e.target.value)}
+					onChange={(e) => handleSongNo(e.target.value)}
 					type="number"
 					margin="dense"
 					disabled={checked.length === 0}
@@ -65,7 +65,7 @@ function SetlistAppBar(props) {
 						min: 1,
 						max: checked.length
 					}}
-					onKeyPress={e => {
+					onKeyPress={(e) => {
 						if (e.key === "Enter") handleSetlist();
 					}}
 				/>
@@ -94,7 +94,7 @@ function SetlistAppBar(props) {
 					aria-label="Add"
 					size="small"
 					disabled={checked.length <= setlistNodes.length}
-					onClick={e => {
+					onClick={(e) => {
 						handleMenuClick(e);
 					}}
 				>

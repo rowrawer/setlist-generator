@@ -12,7 +12,7 @@ export function pickSetlist(
 	oldSetlist = []
 ) {
 	const trackList = tracks.filter(
-		track =>
+		(track) =>
 			// only use suitable tracks
 			checked.includes(track.id) &&
 			!staples.includes(track.id) &&
@@ -41,8 +41,8 @@ export function pickSetlist(
 
 	if (songNoArrayNo > 0) {
 		// if the entire setlist wasn't populated by staples
-		const trackIds = trackList.map(track => track.id);
-		const trackWeight = trackList.map(track => track.popularity || 1);
+		const trackIds = trackList.map((track) => track.id);
+		const trackWeight = trackList.map((track) => track.popularity || 1);
 
 		// "do forEach this amount of times"
 		const songNoArray = [...Array(songNoArrayNo)];
@@ -56,15 +56,15 @@ export function pickSetlist(
 	setlist = chance.shuffle(setlist);
 
 	// add locked songs back where they were
-	setlistLocked.forEach(e => {
+	setlistLocked.forEach((e) => {
 		setlist.splice(oldSetlist.indexOf(e), 0, e);
 	});
 
 	const setlistNodes = tracks
-		.filter(track => setlist.includes(track.id))
+		.filter((track) => setlist.includes(track.id))
 		.sort((a, b) => setlist.indexOf(a.id) - setlist.indexOf(b.id))
-		.map(track => {
-			const feature = features.find(e => e.id === track.id);
+		.map((track) => {
+			const feature = features.find((e) => e.id === track.id);
 			return {
 				id: track.id,
 				name: track.name,

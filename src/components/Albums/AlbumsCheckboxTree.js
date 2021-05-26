@@ -21,7 +21,7 @@ const AlbumEntry = ({
 	handleExpand,
 	expanded
 }) => {
-	const checkBoxState = album.tracks.items.filter(track =>
+	const checkBoxState = album.tracks.items.filter((track) =>
 		// establish amount of checked tracks
 		// (determines state of album checkbox)
 		checked.includes(track.id)
@@ -48,7 +48,7 @@ const AlbumEntry = ({
 						style={{ padding: "0.25rem" }}
 						size="small"
 						onClick={() =>
-							handleCheckAlbum(album.tracks.items.map(track => track.id))
+							handleCheckAlbum(album.tracks.items.map((track) => track.id))
 						}
 						color="default"
 						checked={checkBoxState.length === album.tracks.items.length}
@@ -81,7 +81,7 @@ const TrackEntries = ({
 	deleteStaple
 }) =>
 	tracks.map(
-		track =>
+		(track) =>
 			expanded.includes(album) && (
 				<ListItem
 					key={track.id}
@@ -133,35 +133,37 @@ function AlbumsCheckboxTree(props) {
 		albumsFiltered
 	} = props;
 
-	const handleExpand = id => {
+	const handleExpand = (id) => {
 		var newExpanded;
 		if (expanded.includes(id)) {
-			newExpanded = [...expanded].filter(e => e !== id);
+			newExpanded = [...expanded].filter((e) => e !== id);
 		} else {
 			newExpanded = [...expanded, id];
 		}
 		onExpand(newExpanded);
 	};
 
-	const handleCheck = id => {
+	const handleCheck = (id) => {
 		var newChecked;
 
 		if (checked.includes(id)) {
-			newChecked = [...checked].filter(e => e !== id);
+			newChecked = [...checked].filter((e) => e !== id);
 		} else {
 			newChecked = [...checked, id];
 		}
 		onCheck(newChecked);
 	};
 
-	const handleCheckAlbum = id => {
+	const handleCheckAlbum = (id) => {
 		var newChecked = [...checked];
 
 		// check or uncheck all tracks belonging to album
-		if (checked.filter(track => id.includes(track)).length === id.length) {
-			newChecked = checked.filter(track => !id.includes(track));
+		if (checked.filter((track) => id.includes(track)).length === id.length) {
+			newChecked = checked.filter((track) => !id.includes(track));
 		} else {
-			newChecked = checked.concat(id.filter(track => !checked.includes(track)));
+			newChecked = checked.concat(
+				id.filter((track) => !checked.includes(track))
+			);
 		}
 		onCheck(newChecked);
 	};
@@ -171,9 +173,9 @@ function AlbumsCheckboxTree(props) {
 			{nodes.map(
 				(album, i) =>
 					// only display if not filtered out or already in pool
-					(albumsFiltered.find(filter => filter.value === album.album_type)
+					(albumsFiltered.find((filter) => filter.value === album.album_type)
 						.checked ||
-						album.tracks.items.filter(track => checked.includes(track.id))
+						album.tracks.items.filter((track) => checked.includes(track.id))
 							.length > 0) && (
 						// add divider if different type than previous element in array
 						<React.Fragment key={album.id}>

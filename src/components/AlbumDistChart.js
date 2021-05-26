@@ -14,7 +14,7 @@ function AlbumDistChart(props) {
 
 	const getColors = () => {
 		const colorArray = [];
-		chartData.forEach(e => colorArray.push(e.color));
+		chartData.forEach((e) => colorArray.push(e.color));
 		return colorArray;
 	};
 
@@ -43,7 +43,7 @@ function AlbumDistChart(props) {
 						/>
 					</div>
 					<List className="MuiList-prod">
-						{chartDataSorted.map(album => (
+						{chartDataSorted.map((album) => (
 							<ListItem key={album.label} className="MuiListItem-prod" divider>
 								<ListItemAvatar className="MuiListItemAvatar-prod">
 									<Avatar
@@ -55,7 +55,7 @@ function AlbumDistChart(props) {
 								</ListItemAvatar>
 								<ListItemText
 									className="MuiListItemText-prod"
-									primary={`${album.label} [${album.year}]: ${album.value}`}
+									primary={`${album.label}: ${album.value}`}
 								/>
 							</ListItem>
 						))}

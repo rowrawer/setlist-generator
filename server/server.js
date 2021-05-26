@@ -36,10 +36,10 @@ const spotifyApi = new SpotifyWebApi({
 
 function getCredentials() {
 	spotifyApi.clientCredentialsGrant().then(
-		data => {
+		(data) => {
 			spotifyApi.setAccessToken(data.body.access_token);
 		},
-		err => {
+		(err) => {
 			throw err;
 		}
 	);
@@ -66,18 +66,18 @@ app.get("/api/getTracks/:album/:id", (req, res, next) => {
 		spotifyApi
 			.getTracks(req.params.id.split(","))
 			.then(
-				data => {
+				(data) => {
 					db.tracks[req.params.album] = {
 						body: data.body.tracks,
 						timestamp: Date.now()
 					};
 					res.send(data.body.tracks);
 				},
-				err => {
+				(err) => {
 					next(err);
 				}
 			)
-			.catch(err => next(err));
+			.catch((err) => next(err));
 	}
 });
 
@@ -90,18 +90,18 @@ app.get("/api/getAudioFeatures/:album/:id", (req, res, next) => {
 		spotifyApi
 			.getAudioFeaturesForTracks(req.params.id.split(","))
 			.then(
-				data => {
+				(data) => {
 					db.features[req.params.album] = {
 						body: data.body.audio_features,
 						timestamp: Date.now()
 					};
 					res.send(data.body.audio_features);
 				},
-				err => {
+				(err) => {
 					next(err);
 				}
 			)
-			.catch(err => next(err));
+			.catch((err) => next(err));
 	}
 });
 
@@ -114,18 +114,18 @@ app.get("/api/getAlbum/:id", (req, res, next) => {
 		spotifyApi
 			.getAlbum(req.params.id)
 			.then(
-				data => {
+				(data) => {
 					db.albums[req.params.id] = {
 						body: data.body,
 						timestamp: Date.now()
 					};
 					res.send(data.body);
 				},
-				err => {
+				(err) => {
 					throw err;
 				}
 			)
-			.catch(err => next(err));
+			.catch((err) => next(err));
 	}
 });
 
@@ -138,22 +138,22 @@ app.get("/api/getAlbumList/:id", (req, res, next) => {
 		spotifyApi
 			.getArtistAlbums(req.params.id, {
 				country: "US",
-				include_groups: "album,single",
+				include_groups: "album",
 				limit: 50
 			})
 			.then(
-				data => {
+				(data) => {
 					db.albumList[req.params.id] = {
 						body: data.body,
 						timestamp: Date.now()
 					};
 					res.send(data.body);
 				},
-				err => {
+				(err) => {
 					throw err;
 				}
 			)
-			.catch(err => next(err));
+			.catch((err) => next(err));
 	}
 });
 
@@ -166,18 +166,18 @@ app.get("/api/getArtist/:id", (req, res, next) => {
 		spotifyApi
 			.getArtist(req.params.id)
 			.then(
-				data => {
+				(data) => {
 					db.artist[req.params.id] = {
 						body: data.body,
 						timestamp: Date.now()
 					};
 					res.send(data.body);
 				},
-				err => {
+				(err) => {
 					throw err;
 				}
 			)
-			.catch(err => next(err));
+			.catch((err) => next(err));
 	}
 });
 
@@ -192,18 +192,18 @@ app.get("/api/getArtistsList/:id", (req, res, next) => {
 				limit: 10
 			})
 			.then(
-				data => {
+				(data) => {
 					db.artistsList[req.params.id] = {
 						body: data.body,
 						timestamp: Date.now()
 					};
 					res.send(data.body);
 				},
-				err => {
+				(err) => {
 					throw err;
 				}
 			)
-			.catch(err => next(err));
+			.catch((err) => next(err));
 	}
 });
 

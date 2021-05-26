@@ -70,7 +70,7 @@ function AlbumsAppBar(props) {
 					edge="end"
 					aria-label="Filter"
 					size="small"
-					onClick={e => {
+					onClick={(e) => {
 						handleMenuClick(e);
 					}}
 				>

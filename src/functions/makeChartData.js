@@ -31,7 +31,7 @@ const colors = [
 	blueGrey
 ];
 
-colors.forEach(hue => {
+colors.forEach((hue) => {
 	let shade = 100;
 	colorsProcessed.push(hue[shade]);
 
@@ -45,20 +45,20 @@ colorsProcessed = chance.shuffle(colorsProcessed);
 
 export const makeChartData = (setlist, albums, tracks, features) => {
 	let albumDistChartData = albumSort(albums).map((album, index) => {
-		const newTracks = album.tracks.items.filter(track =>
+		const newTracks = album.tracks.items.filter((track) =>
 			setlist.includes(track.id)
 		);
 
 		return {
-			id: album.name,
-			label: album.name,
+			id: `${album.name} (${album.release_date.slice(0, 4)})`,
+			label: `${album.name} (${album.release_date.slice(0, 4)})`,
 			value: newTracks.length,
 			year: album.release_date.substring(0, 4),
 			color: colorsProcessed[index]
 		};
 	});
 
-	albumDistChartData = albumDistChartData.filter(album => album.value > 0);
+	albumDistChartData = albumDistChartData.filter((album) => album.value > 0);
 
 	const audioFeaturesChartData = {
 		duration_ms: { name: "Duration", min: 0, avg: 0, max: 0 },
@@ -66,13 +66,15 @@ export const makeChartData = (setlist, albums, tracks, features) => {
 		release_date: { name: "Release year", min: 0, avg: 0, max: 0 }
 	};
 
-	const setlistTracks = tracks.filter(track => setlist.includes(track.id));
-	const setlistFeatures = features.filter(track => setlist.includes(track.id));
+	const setlistTracks = tracks.filter((track) => setlist.includes(track.id));
+	const setlistFeatures = features.filter((track) =>
+		setlist.includes(track.id)
+	);
 
-	setlistFeatures.map(track => track.duration_ms).sort((a, b) => b - a);
+	setlistFeatures.map((track) => track.duration_ms).sort((a, b) => b - a);
 
 	const sortedDuration = setlistFeatures
-		.map(track => track.duration_ms)
+		.map((track) => track.duration_ms)
 		.sort((a, b) => b - a);
 
 	audioFeaturesChartData.duration_ms.min = moment(
@@ -88,7 +90,7 @@ export const makeChartData = (setlist, albums, tracks, features) => {
 	).format("m:ss");
 
 	const sortedTempo = setlistFeatures
-		.map(track => track.tempo)
+		.map((track) => track.tempo)
 		.sort((a, b) => b - a);
 
 	audioFeaturesChartData.tempo.min = Math.round(
@@ -102,7 +104,7 @@ export const makeChartData = (setlist, albums, tracks, features) => {
 	);
 
 	const sortedYear = setlistTracks
-		.map(track => Number(track.album.release_date.slice(0, 4)))
+		.map((track) => Number(track.album.release_date.slice(0, 4)))
 		.sort((a, b) => b - a);
 
 	audioFeaturesChartData.release_date.min = sortedYear[sortedYear.length - 1];

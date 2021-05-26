@@ -79,7 +79,7 @@ export default class App extends Component {
 		return true;
 	}
 
-	handleSearch = artist => {
+	handleSearch = (artist) => {
 		// this is for the initial artist search bar
 		localStorage.setItem("artist", JSON.stringify(artist));
 		this.setState({ artist }, () => this.handleData());
@@ -127,7 +127,7 @@ export default class App extends Component {
 			setlist
 		);
 
-		const setlistNew = setlistNodes.map(node => node.id);
+		const setlistNew = setlistNodes.map((node) => node.id);
 
 		const chartData = makeChartData(setlistNew, albums, tracks, features);
 
@@ -141,7 +141,7 @@ export default class App extends Component {
 		);
 	};
 
-	handleSongNo = songNo => {
+	handleSongNo = (songNo) => {
 		const { checked } = this.state;
 
 		if (Number(songNo)) {
@@ -170,7 +170,7 @@ export default class App extends Component {
 		);
 	};
 
-	handlePickSong = id => {
+	handlePickSong = (id) => {
 		// replace a specific song in the setlist
 		const {
 			albums,
@@ -190,7 +190,7 @@ export default class App extends Component {
 		const setlistNodesNew = [...setlistNodes];
 		setlistNodesNew[index] = newSong.node;
 
-		const setlistNew = setlistNodesNew.map(node => node.id);
+		const setlistNew = setlistNodesNew.map((node) => node.id);
 
 		const chartData = makeChartData(setlistNew, albums, tracks, features);
 
@@ -200,7 +200,7 @@ export default class App extends Component {
 		);
 	};
 
-	handleDeleteSong = id => {
+	handleDeleteSong = (id) => {
 		// remove a specific song from the setlist
 		const {
 			albums,
@@ -211,8 +211,10 @@ export default class App extends Component {
 			songNo
 		} = this.state;
 
-		const setlistNew = [...setlist].filter(track => track !== id);
-		const setlistNodesNew = [...setlistNodes].filter(track => track.id !== id);
+		const setlistNew = [...setlist].filter((track) => track !== id);
+		const setlistNodesNew = [...setlistNodes].filter(
+			(track) => track.id !== id
+		);
 		setlistNodesNew.forEach(
 			(track, index) => (setlistNodesNew[index].pos = index + 1)
 		);
@@ -230,7 +232,7 @@ export default class App extends Component {
 		);
 	};
 
-	handleAddSong = start => {
+	handleAddSong = (start) => {
 		// add a song to the setlist
 		const {
 			albums,
@@ -273,12 +275,12 @@ export default class App extends Component {
 		);
 	};
 
-	handleLockSong = id => {
+	handleLockSong = (id) => {
 		// lock a specific song in the setlist
 		// (will not be replaced under any circumstance)
 		var setlistLocked;
 		if (this.state.setlistLocked.includes(id)) {
-			setlistLocked = [...this.state.setlistLocked].filter(e => e !== id);
+			setlistLocked = [...this.state.setlistLocked].filter((e) => e !== id);
 		} else {
 			setlistLocked = [...this.state.setlistLocked, id];
 		}
@@ -298,10 +300,10 @@ export default class App extends Component {
 		this.setState({ staples: [] }, () => this.saveState());
 	};
 
-	deleteStaple = stapleId => {
+	deleteStaple = (stapleId) => {
 		const { staples } = this.state;
 
-		const newState = staples.filter(e => e !== stapleId);
+		const newState = staples.filter((e) => e !== stapleId);
 		this.setState({ staples: newState }, () => this.saveState());
 	};
 
@@ -312,7 +314,7 @@ export default class App extends Component {
 
 		// have to add the staples to the song pool as well
 		const newChecked = [...checked];
-		newStaples.forEach(staple => {
+		newStaples.forEach((staple) => {
 			if (!checked.includes(staple)) newChecked.push(staple);
 		});
 
@@ -328,15 +330,15 @@ export default class App extends Component {
 		this.setState({ checked: newState }, () => this.saveState());
 	};
 
-	onCheck = checked => {
+	onCheck = (checked) => {
 		// remove from staples when removed from song pool
 		const { staples } = this.state;
 
-		const newStaples = staples.filter(staple => checked.includes(staple));
+		const newStaples = staples.filter((staple) => checked.includes(staple));
 		this.setState({ checked, staples: newStaples }, () => this.saveState());
 	};
 
-	addStaple = stapleId => {
+	addStaple = (stapleId) => {
 		const { staples, checked } = this.state;
 
 		const newStaples = [...staples, stapleId];
@@ -351,11 +353,11 @@ export default class App extends Component {
 		}
 	};
 
-	onAlbumsFilteredChange = value => {
+	onAlbumsFilteredChange = (value) => {
 		// spread the state, find the appropriate object, change the checked value
 		const { albumsFiltered } = this.state;
 
-		const newAlbumsFiltered = [...albumsFiltered].map(filter =>
+		const newAlbumsFiltered = [...albumsFiltered].map((filter) =>
 			filter.value === value ? { ...filter, checked: !filter.checked } : filter
 		);
 		this.setState({ albumsFiltered: newAlbumsFiltered }, () =>
@@ -377,15 +379,15 @@ export default class App extends Component {
 		} else {
 			// otherwise load albums first
 			let albumList = await getAlbumList(this.state.artist.id);
-			albumList = albumList.map(album => album.id);
+			albumList = albumList.map((album) => album.id);
 			let data = {};
 
 			// chained fetch requests should really be simpler to write
 			await Promise.all(
-				albumList.map(async album => {
+				albumList.map(async (album) => {
 					data = await getAlbum(album);
 				})
-			).catch(err => {
+			).catch((err) => {
 				console.error(err);
 				this.setState({ error: true });
 			});
@@ -400,9 +402,9 @@ export default class App extends Component {
 			data.albums = albumSort(data.albums);
 
 			let topTracks = data.tracks.filter(
-				track =>
-					data.albums.find(album => album.id === track.album.id).album_type ===
-					"album"
+				(track) =>
+					data.albums.find((album) => album.id === track.album.id)
+						.album_type === "album"
 			);
 
 			let albumsFiltered = [
@@ -418,11 +420,11 @@ export default class App extends Component {
 						? topTracks
 								.sort((a, b) => b.popularity - a.popularity)
 								.slice(0, Math.round(topTracks.length / 3))
-								.map(track => track.id)
+								.map((track) => track.id)
 						: topTracks
 								.sort((a, b) => b.popularity - a.popularity)
 								.slice(0, 50)
-								.map(track => track.id);
+								.map((track) => track.id);
 			} else {
 				// if there are no album tracks, use all tracks
 				// the entire filter segment is janky
@@ -436,11 +438,11 @@ export default class App extends Component {
 						? data.tracks
 								.sort((a, b) => b.popularity - a.popularity)
 								.slice(0, Math.round(data.tracks.length / 3))
-								.map(track => track.id)
+								.map((track) => track.id)
 						: data.tracks
 								.sort((a, b) => b.popularity - a.popularity)
 								.slice(0, 50)
-								.map(track => track.id);
+								.map((track) => track.id);
 			}
 
 			const defaultStaples =
@@ -486,7 +488,7 @@ export default class App extends Component {
 					);
 
 					// id of arrays used to simplify some actions
-					const setlist = setlistNodes.map(node => node.id);
+					const setlist = setlistNodes.map((node) => node.id);
 
 					// album distribution and song features charts
 					const chartData = makeChartData(setlist, albums, tracks, features);
@@ -567,7 +569,7 @@ export default class App extends Component {
 								<Albums
 									albums={albums}
 									checked={checked}
-									onCheck={e => this.onCheck(e)}
+									onCheck={(e) => this.onCheck(e)}
 									restoreChecked={this.restoreChecked}
 									checkDefaultAlbums={checkIdentical(checked, defaultChecked)}
 									staples={staples}

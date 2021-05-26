@@ -1,4 +1,4 @@
-export const albumSort = albums =>
+export const albumSort = (albums) =>
 	Object.values(albums)
 		.sort(
 			(a, b) =>
