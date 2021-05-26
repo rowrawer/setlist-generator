@@ -63,10 +63,19 @@ export async function getAlbumList(artist) {
 			if (json) {
 				const names = [];
 				return json.items.filter((album) => {
-					const duplicate = names.includes(
-						album.name + album.release_date.slice(0, 4)
-					);
-					names.push(album.name + album.release_date.slice(0, 4));
+					const duplicate =
+						names.find(
+							(a) =>
+								a.includes(album.name) &&
+								a.includes(album.release_date.slice(0, 4))
+						) ||
+						(album.release_date_precision === "day" &&
+							names.find(
+								(a) =>
+									a.includes(album.name.split(" (")[0]) &&
+									a.includes(album.release_date)
+							));
+					names.push(album.name + album.release_date);
 					return !duplicate;
 				});
 			}
