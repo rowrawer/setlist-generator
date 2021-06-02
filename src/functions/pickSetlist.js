@@ -24,17 +24,13 @@ export function pickSetlist(
 	if (staples.length > 0) {
 		// ensure that staples are included in the set
 		const shuffledStaples = chance.shuffle(staples);
-		shuffledStaples.forEach((staple, index) => {
-			if (index < songNo) {
-				if (oldSetlist.length > 0 && setlistLocked.length > 0) {
-					// take into account the amount of locked songs
-					if (!oldSetlist.includes(staple) && index <= setlistLocked.length)
-						setlist.push(staple);
-				} else {
+		shuffledStaples
+			.filter((s) => !setlistLocked.includes(s))
+			.forEach((staple, index) => {
+				if (index < songNo) {
 					setlist.push(staple);
 				}
-			}
-		});
+			});
 	}
 
 	const songNoArrayNo = songNo - setlistLocked.length - setlist.length;
@@ -56,9 +52,11 @@ export function pickSetlist(
 	setlist = chance.shuffle(setlist);
 
 	// add locked songs back where they were
-	setlistLocked.forEach((e) => {
-		setlist.splice(oldSetlist.indexOf(e), 0, e);
-	});
+	setlistLocked
+		.sort((a, b) => oldSetlist.indexOf(a) - oldSetlist.indexOf(b))
+		.forEach((e) => {
+			setlist.splice(oldSetlist.indexOf(e), 0, e);
+		});
 
 	const setlistNodes = tracks
 		.filter((track) => setlist.includes(track.id))

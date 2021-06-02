@@ -165,8 +165,12 @@ export default class App extends Component {
 			(track, index) => (setlistNodesNew[index].pos = index + 1)
 		);
 
-		this.setState({ setlist: setlistNew, setlistNodes: setlistNodesNew }, () =>
-			this.saveState()
+		this.setState(
+			{
+				setlist: setlistNew,
+				setlistNodes: setlistNodesNew
+			},
+			() => this.saveState()
 		);
 	};
 
@@ -278,7 +282,7 @@ export default class App extends Component {
 	handleLockSong = (id) => {
 		// lock a specific song in the setlist
 		// (will not be replaced under any circumstance)
-		var setlistLocked;
+		let setlistLocked;
 		if (this.state.setlistLocked.includes(id)) {
 			setlistLocked = [...this.state.setlistLocked].filter((e) => e !== id);
 		} else {
@@ -294,6 +298,11 @@ export default class App extends Component {
 	handleReset = () => {
 		// X in the header used to change artist
 		this.setState({ ...initialState });
+	};
+
+	handleRefresh = () => {
+		localStorage.removeItem(this.state.artist.id);
+		this.setState({ setLoading: true }, () => this.handleData());
 	};
 
 	deleteAllStaples = () => {
@@ -367,7 +376,7 @@ export default class App extends Component {
 
 	// save in local storage as artist: {albums, tracks, etc.}
 	async handleData() {
-		// if the update date and artist are local storage is correct then load previous state
+		// if the update date and artist in local storage is correct and if it hasn't been a week then load previous state
 		const lsUpdateDate = localStorage.getItem("updateDate");
 		if (
 			localStorage.getItem(this.state.artist.id) &&
@@ -541,6 +550,7 @@ export default class App extends Component {
 							error={error}
 							setLoading={setLoading}
 							handleReset={this.handleReset}
+							handleRefresh={this.handleRefresh}
 						/>
 					</div>
 					{!setLoading && artist && (

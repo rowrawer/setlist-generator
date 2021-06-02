@@ -72,6 +72,8 @@ app.get("/api/getTracks/:album/:id", (req, res, next) => {
 						timestamp: Date.now()
 					};
 					res.send(data.body.tracks);
+					// ddos protection
+					setTimeout(() => {}, 250);
 				},
 				(err) => {
 					next(err);
@@ -96,6 +98,8 @@ app.get("/api/getAudioFeatures/:album/:id", (req, res, next) => {
 						timestamp: Date.now()
 					};
 					res.send(data.body.audio_features);
+					// ddos protection
+					setTimeout(() => {}, 250);
 				},
 				(err) => {
 					next(err);
@@ -120,6 +124,8 @@ app.get("/api/getAlbum/:id", (req, res, next) => {
 						timestamp: Date.now()
 					};
 					res.send(data.body);
+					// ddos protection
+					setTimeout(() => {}, 250);
 				},
 				(err) => {
 					throw err;

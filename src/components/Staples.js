@@ -21,10 +21,10 @@ export default class Staples extends PureComponent {
 		};
 	}
 
-	onFilterChange = e => {
+	onFilterChange = (e) => {
 		// search through tracks by name
 		this.setState({ filterText: e.target.value }, () => {
-			const tracksFiltered = this.props.tracks.filter(track => {
+			const tracksFiltered = this.props.tracks.filter((track) => {
 				if (
 					track.name
 						.toLocaleLowerCase()
@@ -39,7 +39,7 @@ export default class Staples extends PureComponent {
 		});
 	};
 
-	onSearchClick = id => {
+	onSearchClick = (id) => {
 		this.setState({ filterText: "" });
 		this.props.addStaple(id);
 	};
@@ -61,7 +61,7 @@ export default class Staples extends PureComponent {
 
 		const { filterText, tracksFiltered } = this.state;
 
-		const data = tracks.filter(track => staples.includes(track.id));
+		const data = tracks.filter((track) => staples.includes(track.id));
 
 		return (
 			<>
@@ -77,7 +77,7 @@ export default class Staples extends PureComponent {
 				/>
 				{!filterText ? (
 					<List className="MuiList-prod">
-						{data.map(staple => (
+						{data.map((staple) => (
 							<ListItem key={staple.id} className="MuiListItem-prod" divider>
 								<ListItemAvatar className="MuiListItemAvatar-prod">
 									<Avatar
@@ -105,7 +105,7 @@ export default class Staples extends PureComponent {
 					</List>
 				) : (
 					<MenuList className="MuiList-prod">
-						{tracksFiltered.slice(0, 20).map(staple => (
+						{tracksFiltered.slice(0, 20).map((staple) => (
 							<MenuItem
 								key={staple.id}
 								className="MuiListItem-prod"

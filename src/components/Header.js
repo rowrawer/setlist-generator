@@ -16,6 +16,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import copy from "clipboard-copy";
 import Snackbar from "@material-ui/core/Snackbar";
 import FileCopyIcon from "@material-ui/icons/FileCopyOutlined";
+import SettingsBackupRestoreIcon from "@material-ui/icons/SettingsBackupRestore";
 import { getArtistsList } from "../functions/getData";
 
 export default class Header extends PureComponent {
@@ -30,6 +31,7 @@ export default class Header extends PureComponent {
 
 	async onFilterChange() {
 		// no onchange search because that would be a nightmare for the server
+		// eslint-disable-next-line react/no-access-state-in-setstate
 		const artistsFiltered = await getArtistsList(this.state.filterText);
 		this.setState({ artistsFiltered });
 	}
@@ -38,7 +40,7 @@ export default class Header extends PureComponent {
 		this.setState({ openSnackbar: false });
 	};
 
-	onFilterText = e => {
+	onFilterText = (e) => {
 		this.setState({ filterText: e.target.value });
 	};
 
@@ -46,14 +48,14 @@ export default class Header extends PureComponent {
 		this.setState({ filterText: "" });
 	};
 
-	prepareName = name => {
+	prepareName = (name) => {
 		// remove "the" from artist names as the header already includes it
 		const preparedName = name.toLowerCase().split(" ");
 		if (preparedName[0] === "the") preparedName.shift();
 		return preparedName.join(" ");
 	};
 
-	copyArtist = artist => {
+	copyArtist = (artist) => {
 		// copies url directly to artist page
 		copy(
 			`${window.location.protocol}//${window.location.host}/?a=${artist}`
@@ -64,7 +66,14 @@ export default class Header extends PureComponent {
 
 	render() {
 		const { filterText, artistsFiltered, openSnackbar } = this.state;
-		const { artist, handleSearch, error, setLoading, handleReset } = this.props;
+		const {
+			artist,
+			handleSearch,
+			error,
+			setLoading,
+			handleReset,
+			handleRefresh
+		} = this.props;
 
 		return (
 			<>
@@ -81,7 +90,7 @@ export default class Header extends PureComponent {
 							type="search"
 							value={filterText}
 							onChange={this.onFilterText}
-							onKeyPress={e => {
+							onKeyPress={(e) => {
 								if (e.key === "Enter") this.onFilterChange();
 							}}
 							margin="dense"
@@ -109,7 +118,7 @@ export default class Header extends PureComponent {
 						<div className="MuiListContainer">
 							<MenuList className="MuiList-prod">
 								{artistsFiltered &&
-									artistsFiltered.map(artistEl => (
+									artistsFiltered.map((artistEl) => (
 										<MenuItem
 											key={artistEl.id}
 											className="MuiListItem-prod"
@@ -180,9 +189,19 @@ export default class Header extends PureComponent {
 							setlist generator
 							<IconButton
 								edge="end"
+								aria-label="Refresh data"
+								size="small"
+								disabled={setLoading}
+								onClick={() => handleRefresh()}
+							>
+								<SettingsBackupRestoreIcon />
+							</IconButton>
+							<IconButton
+								edge="end"
 								aria-label="Clear"
 								size="small"
 								disableRipple
+								disabled={setLoading}
 								onClick={() => handleReset()}
 							>
 								<ClearIcon color="action" />

@@ -20,11 +20,11 @@ export default class Setlist extends PureComponent {
 		};
 	}
 
-	handleExpand = id => {
+	handleExpand = (id) => {
 		// add or delete from list of expanded entries
 		var expanded;
 		if (this.state.expanded.includes(id)) {
-			expanded = [...this.state.expanded].filter(e => e !== id);
+			expanded = [...this.state.expanded].filter((e) => e !== id);
 		} else {
 			expanded = [...this.state.expanded, id];
 		}
@@ -35,10 +35,10 @@ export default class Setlist extends PureComponent {
 		if (oldIndex !== newIndex) this.props.sortSetlist(oldIndex, newIndex);
 	};
 
-	copySetlist = setlistNodes => {
+	copySetlist = (setlistNodes) => {
 		// copies setlist as a plain text list
 		const formattedSetlist = [];
-		setlistNodes.forEach(track => {
+		setlistNodes.forEach((track) => {
 			formattedSetlist.push(`${track.pos}. ${track.name}`);
 		});
 		copy(formattedSetlist.join("\n")).then(() => {
@@ -51,7 +51,7 @@ export default class Setlist extends PureComponent {
 	};
 
 	// open add song menu
-	handleMenuClick = e => this.setState({ anchorEl: e.currentTarget });
+	handleMenuClick = (e) => this.setState({ anchorEl: e.currentTarget });
 
 	handleMenuClose = () => this.setState({ anchorEl: null });
 

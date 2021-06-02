@@ -37,9 +37,9 @@ function AlbumDistChart(props) {
 							innerRadius={0.7}
 							padAngle={0.7}
 							cornerRadius={3}
-							enableRadialLabels={false}
+							enableArcLinkLabels={false}
 							colors={getColors()}
-							slicesLabelsTextColor="#FFFFFF"
+							arcLabelsTextColor="#FFFFFF"
 						/>
 					</div>
 					<List className="MuiList-prod">

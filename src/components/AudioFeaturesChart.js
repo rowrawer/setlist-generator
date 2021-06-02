@@ -36,7 +36,7 @@ function AudioFeaturesChart(props) {
 					</TableRow>
 				</TableHead>
 				<TableBody className="MuiTableBody-prod">
-					{Object.keys(chartData).map(row => (
+					{Object.keys(chartData).map((row) => (
 						<TableRow key={chartData[row].name}>
 							<TableCell
 								className="MuiTableCell-prod"
